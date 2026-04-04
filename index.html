@@ -2,10 +2,9 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>LinKey - Galeria de Links (ultra compatível)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinKey - Galeria com Painel Admin</title>
     <style>
-        /* Estilos simples e compatíveis com navegadores antigos */
         * {
             margin: 0;
             padding: 0;
@@ -15,16 +14,16 @@
         body {
             background: #0a0f1e;
             font-family: Arial, Helvetica, sans-serif;
-            padding: 20px 15px;
+            padding: 20px;
             color: #eef2ff;
+            min-height: 100vh;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1300px;
             margin: 0 auto;
         }
 
-        /* cabeçalho */
         .header {
             text-align: center;
             margin-bottom: 30px;
@@ -35,7 +34,6 @@
             font-weight: bold;
             color: #3b82f6;
             text-shadow: 2px 2px 0 #0a2a44;
-            letter-spacing: -1px;
         }
 
         .sub {
@@ -44,7 +42,6 @@
             margin-top: 5px;
         }
 
-        /* barra de pesquisa simples */
         .search-section {
             max-width: 500px;
             margin: 0 auto 30px auto;
@@ -73,7 +70,6 @@
             font-size: 16px;
             color: white;
             outline: none;
-            font-family: Arial, Helvetica, sans-serif;
         }
 
         #searchInput::placeholder {
@@ -85,7 +81,6 @@
             border: none;
             color: white;
             cursor: pointer;
-            font-size: 16px;
             padding: 4px 10px;
             border-radius: 30px;
             display: none;
@@ -102,71 +97,79 @@
             margin-top: 10px;
         }
 
-        /* grade de cards - fallback para grid antigo com float? Melhor usar display: inline-block com text-align */
+        .admin-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 1000;
+            font-size: 14px;
+        }
+
+        .admin-btn:hover {
+            background: #2563eb;
+        }
+
         .gallery {
-            text-align: center;
-            font-size: 0; /* remove espaço inline-block */
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
         }
 
         .card {
-            display: inline-block;
-            vertical-align: top;
             width: 280px;
-            margin: 12px;
             background: #0f1420;
             border-radius: 20px;
-            border: 1px solid #1f2a46;
-            text-align: left;
-            font-size: 16px; /* reset */
+            border: 1px solid #1f2a44;
+            overflow: hidden;
             transition: all 0.2s;
         }
 
         .card:hover {
             background: #131a2a;
             border-color: #2e4a7c;
+            transform: translateY(-3px);
         }
 
-        /* área da imagem */
         .card-img {
             width: 100%;
             height: 170px;
             background: #080c14;
-            overflow: hidden;
-            border-top-left-radius: 20px;
-            border-top-right-radius: 20px;
-            text-align: center;
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
         }
 
         .card-img img {
             max-width: 100%;
             max-height: 100%;
-            width: auto;
-            height: auto;
-            display: block;
-            margin: 0 auto;
+            object-fit: cover;
         }
 
         .fallback-icon {
-            display: inline-block;
             font-size: 48px;
             color: #3b6cb0;
-            line-height: 170px;
         }
 
-        /* conteúdo */
         .card-content {
-            padding: 14px 12px 18px 12px;
+            padding: 14px 12px 18px;
         }
 
         .link-name {
             font-size: 18px;
             font-weight: bold;
-            color: #eef3ff;
             margin-bottom: 14px;
             word-break: break-word;
+            color: #eef3ff;
         }
 
         .download-btn {
@@ -181,15 +184,13 @@
             font-size: 14px;
             font-weight: bold;
             cursor: pointer;
-            font-family: Arial, Helvetica, sans-serif;
-            transition: 0.1s linear;
             text-decoration: none;
+            transition: all 0.2s;
         }
 
         .download-btn:hover {
             background: #1e3e64;
             color: white;
-            border-color: #3f74ae;
         }
 
         .no-results {
@@ -199,34 +200,165 @@
             border-radius: 30px;
             color: #98a9cf;
             font-size: 16px;
-            border: 1px dashed #2a3a60;
-            margin: 20px;
-            display: inline-block;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 2000;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: #0f1420;
+            margin: 50px auto;
+            padding: 25px;
             width: 90%;
+            max-width: 600px;
+            border-radius: 20px;
+            border: 1px solid #2e4a7c;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            color: #3b82f6;
+        }
+
+        .close {
+            cursor: pointer;
+            font-size: 28px;
+            color: #8a9bcf;
+        }
+
+        .close:hover {
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #8a9bcf;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            background: #080c14;
+            border: 1px solid #1e2a44;
+            color: white;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-right: 10px;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background: #2563eb;
+        }
+
+        .link-list {
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .link-item {
+            background: #080c14;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #1e2a44;
+        }
+
+        .link-item-info {
+            flex: 1;
+        }
+
+        .link-item-info strong {
+            color: #3b82f6;
+        }
+
+        .link-item-info small {
+            color: #6a7c9f;
+            font-size: 11px;
+        }
+
+        .link-item-buttons button {
+            margin-left: 5px;
+            padding: 5px 12px;
+            font-size: 12px;
+        }
+
+        .login-area {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .login-area h3 {
+            margin-bottom: 20px;
+            color: #3b82f6;
+        }
+
+        .login-area input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            background: #080c14;
+            border: 1px solid #1e2a44;
+            color: white;
+            border-radius: 8px;
+        }
+
+        hr {
+            margin: 20px 0;
+            border-color: #1e2a44;
         }
 
         .footer {
             text-align: center;
+            margin-top: 40px;
             font-size: 11px;
             color: #3e506e;
-            margin-top: 40px;
             padding: 15px;
-            border-top: 1px solid #1a2335;
         }
 
-        /* responsivo básico */
-        @media (max-width: 650px) {
-            .card {
-                width: 90%;
-                margin: 12px auto;
-                display: block;
-            }
-            .gallery {
-                text-align: center;
-            }
-            .logo {
-                font-size: 38px;
-            }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #8a9bcf;
         }
     </style>
 </head>
@@ -235,7 +367,7 @@
 <div class="container">
     <div class="header">
         <div class="logo">LinKey</div>
-        <div class="sub">Galeria de links · acesse e baixe com facilidade</div>
+        <div class="sub">Galeria inteligente com painel administrativo</div>
     </div>
 
     <div class="search-section">
@@ -248,197 +380,271 @@
     </div>
 
     <div id="galleryContainer" class="gallery">
-        <!-- os cards serão inseridos via javascript puro -->
+        <div class="loading">Carregando links...</div>
     </div>
 
     <div class="footer">
-        LinKey — Clique em "Baixar / Acessar" para ser redirecionado
+        LinKey - Clique em "Baixar / Acessar" para ser redirecionado
     </div>
 </div>
 
+<button class="admin-btn" onclick="abrirAdmin()">🔧 Admin</button>
+
+<div id="adminModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Painel Administrativo</h2>
+            <span class="close" onclick="fecharAdmin()">&times;</span>
+        </div>
+        <div id="adminContent"></div>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
 <script>
-    // ------------------------------------------------------------
-    // BASE DE LINKS (IMAGEM + NOME + URL DE REDIRECIONAMENTO)
-    // Compatível com navegadores antigos, sem arrow functions e let/const (usando var)
-    // ------------------------------------------------------------
-    var linksData = [
-        {
-            nome: "GitHub Oficial",
-            url: "https://github.com",
-            imagem: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
-        },
-        {
-            nome: "Unsplash - Fotos Grátis",
-            url: "https://unsplash.com",
-            imagem: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=400&h=250&fit=crop"
-        },
-        {
-            nome: "Freepik Recursos",
-            url: "https://www.freepik.com",
-            imagem: "https://img.freepik.com/iconos-gratis/descargar_318-418870.jpg?w=200"
-        },
-        {
-            nome: "Google Drive",
-            url: "https://drive.google.com",
-            imagem: "https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_48dp.png"
-        },
-        {
-            nome: "Documentação React",
-            url: "https://react.dev",
-            imagem: "https://cdn.worldvectorlogo.com/logos/react-2.svg"
-        },
-        {
-            nome: "Arquivo PDF Exemplo",
-            url: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
-            imagem: "https://cdn-icons-png.flaticon.com/512/337/337946.png"
-        },
-        {
-            nome: "Wikipedia",
-            url: "https://www.wikipedia.org",
-            imagem: "https://upload.wikimedia.org/wikipedia/commons/6/63/Wikipedia-logo.png"
-        },
-        {
-            nome: "Arquivo ZIP Exemplo",
-            url: "https://file-examples.com/storage/fe8c0e0e2e9a0e0e0e0e0e0/2017/10/file-example_ZIP_100kB.zip",
-            imagem: "https://cdn-icons-png.flaticon.com/512/2920/2920233.png"
-        }
-    ];
-
-    // Função para escapar HTML (proteção XSS)
-    function escapeHtml(str) {
-        if (!str) return "";
-        return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
-    }
-
-    // fallback de imagem
-    function handleImageError(imgElement) {
-        imgElement.onerror = null; // evita loop
-        imgElement.style.display = "none";
-        var parent = imgElement.parentNode;
-        var fallbackSpan = document.createElement("span");
-        fallbackSpan.className = "fallback-icon";
-        fallbackSpan.innerHTML = "🖼️";
-        // limpar e adicionar fallback
-        if (parent) {
-            parent.appendChild(fallbackSpan);
-        }
-    }
-
-    // função principal que renderiza a galeria baseada no termo de pesquisa
-    function renderGallery(searchTerm) {
-        var container = document.getElementById("galleryContainer");
-        var statsDiv = document.getElementById("resultStats");
-        var term = (typeof searchTerm === "string") ? searchTerm.trim().toLowerCase() : "";
-        
-        var filtered = [];
-        // filtrar com laço tradicional para compatibilidade total
-        for (var i = 0; i < linksData.length; i++) {
-            var item = linksData[i];
-            if (term === "") {
-                filtered.push(item);
+    // Firebase configuration (SUAS CONFIGURAÇÕES)
+    const firebaseConfig = {
+        apiKey: "AIzaSyBxnecJ2b1MQyDNA6JDqcardi0TfPGnZKY",
+        authDomain: "linkey-f167c.firebaseapp.com",
+        projectId: "linkey-f167c",
+        storageBucket: "linkey-f167c.firebasestorage.app",
+        messagingSenderId: "120200149024",
+        appId: "1:120200149024:web:88cb5d5d0fb814df67a445",
+        measurementId: "G-36TREE8R23"
+    };
+    
+    // Inicializar Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    
+    let todosLinks = [];
+    let adminLogado = false;
+    const SENHA_ADMIN = "linkey123";
+    
+    async function carregarLinks() {
+        try {
+            const snapshot = await db.collection("links").orderBy("nome").get();
+            todosLinks = [];
+            snapshot.forEach(doc => {
+                todosLinks.push({
+                    id: doc.id,
+                    ...doc.data()
+                });
+            });
+            
+            if(todosLinks.length === 0) {
+                await criarLinksExemplo();
+                await carregarLinks();
             } else {
-                if (item.nome.toLowerCase().indexOf(term) !== -1) {
-                    filtered.push(item);
-                }
+                renderizarGaleria("");
             }
+        } catch(erro) {
+            console.error("Erro:", erro);
+            document.getElementById("galleryContainer").innerHTML = '<div class="no-results">❌ Erro ao carregar links. Verifique sua internet e se o Firebase está configurado corretamente.</div>';
+        }
+    }
+    
+    async function criarLinksExemplo() {
+        const exemplos = [
+            { nome: "GitHub", url: "https://github.com", imagem: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" },
+            { nome: "Google", url: "https://google.com", imagem: "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" },
+            { nome: "Wikipedia", url: "https://wikipedia.org", imagem: "https://upload.wikimedia.org/wikipedia/commons/6/63/Wikipedia-logo.png" },
+            { nome: "YouTube", url: "https://youtube.com", imagem: "https://www.youtube.com/img/desktop/yt_1200.png" }
+        ];
+        
+        for(let item of exemplos) {
+            await db.collection("links").add(item);
+        }
+    }
+    
+    function renderizarGaleria(busca) {
+        const container = document.getElementById("galleryContainer");
+        const statsDiv = document.getElementById("resultStats");
+        const termo = busca.toLowerCase().trim();
+        
+        let filtrados = todosLinks;
+        if(termo !== "") {
+            filtrados = todosLinks.filter(link => link.nome.toLowerCase().includes(termo));
         }
         
-        var total = filtered.length;
-        var totalOriginal = linksData.length;
+        statsDiv.innerHTML = `${filtrados.length} link${filtrados.length !== 1 ? 's' : ''} disponível${termo !== "" ? ` para "${busca}"` : ""}`;
         
-        // exibir estatísticas
-        if (term === "") {
-            statsDiv.innerHTML = total + " link" + (total !== 1 ? "s" : "") + " disponível";
-        } else {
-            statsDiv.innerHTML = total + " resultado" + (total !== 1 ? "s" : "") + " para \"" + escapeHtml(term) + "\" (de " + totalOriginal + ")";
-        }
-        
-        // se não tiver resultados
-        if (total === 0) {
-            container.innerHTML = '<div class="no-results">🔎 Nenhum link encontrado. Tente outro nome.</div>';
+        if(filtrados.length === 0) {
+            container.innerHTML = '<div class="no-results">🔎 Nenhum link encontrado.</div>';
             return;
         }
         
-        // construir os cards manualmente com string (melhor performance e compatível)
-        var html = "";
-        for (var j = 0; j < filtered.length; j++) {
-            var link = filtered[j];
-            var nomeSeguro = escapeHtml(link.nome);
-            var urlSegura = escapeHtml(link.url);
-            var imgSrc = escapeHtml(link.imagem);
-            
-            html += '<div class="card">';
-            html += '<div class="card-img">';
-            html += '<img src="' + imgSrc + '" alt="' + nomeSeguro + '" onerror="handleImageError(this)">';
-            html += '</div>';
-            html += '<div class="card-content">';
-            html += '<div class="link-name">' + nomeSeguro + '</div>';
-            html += '<button class="download-btn" data-url="' + urlSegura + '">⬇️ Baixar / Acessar</button>';
-            html += '</div>';
-            html += '</div>';
+        let html = "";
+        for(let link of filtrados) {
+            html += `
+                <div class="card">
+                    <div class="card-img">
+                        <img src="${link.imagem}" alt="${link.nome}" onerror="this.onerror=null; this.style.display='none'; this.parentNode.innerHTML += '<span class=fallback-icon>🖼️</span>'">
+                    </div>
+                    <div class="card-content">
+                        <div class="link-name">${escapeHtml(link.nome)}</div>
+                        <button class="download-btn" onclick="window.open('${link.url}', '_blank')">⬇️ Baixar / Acessar</button>
+                    </div>
+                </div>
+            `;
         }
-        
         container.innerHTML = html;
-        
-        // adicionar eventos aos botões (compatível com navegadores antigos)
-        var botoes = document.querySelectorAll(".download-btn");
-        for (var k = 0; k < botoes.length; k++) {
-            botoes[k].addEventListener("click", function(e) {
-                var url = this.getAttribute("data-url");
-                if (url) {
-                    window.open(url, "_blank");
-                }
-            });
+    }
+    
+    function escapeHtml(str) {
+        if(!str) return "";
+        return str.replace(/[&<>]/g, function(m) {
+            if(m === "&") return "&amp;";
+            if(m === "<") return "&lt;";
+            if(m === ">") return "&gt;";
+            return m;
+        });
+    }
+    
+    function abrirAdmin() {
+        document.getElementById("adminModal").style.display = "block";
+        if(!adminLogado) {
+            document.getElementById("adminContent").innerHTML = `
+                <div class="login-area">
+                    <h3>🔐 Login Administrativo</h3>
+                    <input type="password" id="adminSenha" placeholder="Digite a senha" onkeypress="if(event.key==='Enter') fazerLogin()">
+                    <button onclick="fazerLogin()">Entrar</button>
+                </div>
+            `;
+        } else {
+            mostrarPainelAdmin();
         }
     }
     
-    // configurar a pesquisa e o limpar
-    function setupSearch() {
-        var searchInput = document.getElementById("searchInput");
-        var clearBtn = document.getElementById("clearSearchBtn");
-        
-        function update() {
-            var query = searchInput.value;
-            renderGallery(query);
-            if (query.trim().length > 0) {
-                clearBtn.style.display = "inline-block";
-            } else {
-                clearBtn.style.display = "none";
-            }
-        }
-        
-        // evento input funciona em navegadores antigos também (IE9+)
-        if (searchInput.addEventListener) {
-            searchInput.addEventListener("input", update);
+    function fecharAdmin() {
+        document.getElementById("adminModal").style.display = "none";
+    }
+    
+    function fazerLogin() {
+        const senha = document.getElementById("adminSenha").value;
+        if(senha === SENHA_ADMIN) {
+            adminLogado = true;
+            mostrarPainelAdmin();
         } else {
-            searchInput.attachEvent("onpropertychange", update); // fallback extremo
+            alert("❌ Senha incorreta!");
+        }
+    }
+    
+    async function mostrarPainelAdmin() {
+        const content = document.getElementById("adminContent");
+        content.innerHTML = `
+            <div class="form-group">
+                <h3>➕ Adicionar novo link</h3>
+                <label>Nome do link:</label>
+                <input type="text" id="novoNome" placeholder="Ex: Meu Site">
+                <label>URL de destino:</label>
+                <input type="text" id="novaUrl" placeholder="https://...">
+                <label>URL da imagem (opcional):</label>
+                <input type="text" id="novaImagem" placeholder="https://...">
+                <button onclick="adicionarLink()">➕ Adicionar</button>
+            </div>
+            <hr>
+            <h3>📋 Links existentes (${todosLinks.length})</h3>
+            <div id="listaLinksAdmin" class="link-list"></div>
+        `;
+        await listarLinksAdmin();
+    }
+    
+    async function listarLinksAdmin() {
+        const listaDiv = document.getElementById("listaLinksAdmin");
+        if(!listaDiv) return;
+        
+        const snapshot = await db.collection("links").orderBy("nome").get();
+        let html = "";
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            html += `
+                <div class="link-item">
+                    <div class="link-item-info">
+                        <strong>${escapeHtml(data.nome)}</strong><br>
+                        <small>${data.url.substring(0, 50)}${data.url.length > 50 ? '...' : ''}</small>
+                    </div>
+                    <div class="link-item-buttons">
+                        <button onclick="editarLink('${doc.id}', '${escapeHtml(data.nome)}', '${escapeHtml(data.url)}', '${escapeHtml(data.imagem)}')">✏️ Editar</button>
+                        <button onclick="excluirLink('${doc.id}')" style="background:#dc2626">🗑️ Excluir</button>
+                    </div>
+                </div>
+            `;
+        });
+        listaDiv.innerHTML = html || "<p>Nenhum link cadastrado.</p>";
+    }
+    
+    async function adicionarLink() {
+        const nome = document.getElementById("novoNome").value.trim();
+        const url = document.getElementById("novaUrl").value.trim();
+        let imagem = document.getElementById("novaImagem").value.trim();
+        
+        if(!nome || !url) {
+            alert("❌ Nome e URL são obrigatórios!");
+            return;
         }
         
-        clearBtn.addEventListener("click", function() {
-            searchInput.value = "";
-            update();
-            searchInput.focus();
+        if(!imagem) {
+            imagem = "https://via.placeholder.com/200x150?text=Sem+Imagem";
+        }
+        
+        await db.collection("links").add({
+            nome: nome,
+            url: url,
+            imagem: imagem
         });
         
-        // inicializar
-        update();
+        alert("✅ Link adicionado com sucesso!");
+        document.getElementById("novoNome").value = "";
+        document.getElementById("novaUrl").value = "";
+        document.getElementById("novaImagem").value = "";
+        await carregarLinks();
+        await listarLinksAdmin();
     }
     
-    // tornar handleImageError acessível globalmente
-    window.handleImageError = handleImageError;
-    
-    // iniciar quando o DOM estiver pronto (cross-browser)
-    function ready(fn) {
-        if (document.readyState === "loading") {
-            document.addEventListener("DOMContentLoaded", fn);
-        } else {
-            fn();
+    async function excluirLink(id) {
+        if(confirm("⚠️ Tem certeza que deseja excluir este link permanentemente?")) {
+            await db.collection("links").doc(id).delete();
+            alert("✅ Link excluído!");
+            await carregarLinks();
+            await listarLinksAdmin();
         }
     }
     
-    ready(function() {
-        setupSearch();
+    async function editarLink(id, nomeAtual, urlAtual, imgAtual) {
+        const novoNome = prompt("✏️ Editar nome:", nomeAtual);
+        if(!novoNome) return;
+        
+        const novaUrl = prompt("✏️ Editar URL:", urlAtual);
+        if(!novaUrl) return;
+        
+        const novaImg = prompt("✏️ Editar imagem URL (ou deixe em branco):", imgAtual);
+        
+        await db.collection("links").doc(id).update({
+            nome: novoNome,
+            url: novaUrl,
+            imagem: novaImg || "https://via.placeholder.com/200x150?text=Sem+Imagem"
+        });
+        
+        alert("✅ Link atualizado!");
+        await carregarLinks();
+        await listarLinksAdmin();
+    }
+    
+    document.getElementById("searchInput").addEventListener("input", function(e) {
+        renderizarGaleria(e.target.value);
+        document.getElementById("clearSearchBtn").style.display = e.target.value ? "inline-block" : "none";
     });
+    
+    document.getElementById("clearSearchBtn").addEventListener("click", function() {
+        document.getElementById("searchInput").value = "";
+        renderizarGaleria("");
+        this.style.display = "none";
+    });
+    
+    carregarLinks();
 </script>
 </body>
 </html>
