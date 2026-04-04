@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LinKey - Galeria com Painel Admin</title>
+    <title>LinKey Turbo - Galeria Avançada</title>
     <style>
         * {
             margin: 0;
@@ -11,16 +11,72 @@
             box-sizing: border-box;
         }
 
+        /* Temas */
         body {
-            background: #0a0f1e;
             font-family: Arial, Helvetica, sans-serif;
             padding: 20px;
-            color: #eef2ff;
+            transition: all 0.3s ease;
             min-height: 100vh;
         }
 
+        body.dark {
+            background: #0a0f1e;
+            color: #eef2ff;
+        }
+
+        body.light {
+            background: #f0f2f5;
+            color: #1a1a2e;
+        }
+
+        body.light .card {
+            background: #ffffff;
+            border-color: #d1d5db;
+        }
+
+        body.light .card:hover {
+            background: #f9fafb;
+        }
+
+        body.light .link-name {
+            color: #1f2937;
+        }
+
+        body.light .search-box {
+            background: #ffffff;
+            border-color: #d1d5db;
+        }
+
+        body.light #searchInput {
+            color: #1f2937;
+        }
+
+        body.light .result-stats {
+            color: #6b7280;
+        }
+
+        body.light .footer {
+            color: #9ca3af;
+        }
+
+        body.light .modal-content {
+            background: #ffffff;
+            border-color: #d1d5db;
+        }
+
+        body.light .form-group input {
+            background: #f9fafb;
+            border-color: #d1d5db;
+            color: #1f2937;
+        }
+
+        body.light .link-item {
+            background: #f9fafb;
+            border-color: #e5e7eb;
+        }
+
         .container {
-            max-width: 1300px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
@@ -32,19 +88,105 @@
         .logo {
             font-size: 48px;
             font-weight: bold;
-            color: #3b82f6;
-            text-shadow: 2px 2px 0 #0a2a44;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
         }
 
         .sub {
-            color: #8a9bcf;
             font-size: 14px;
             margin-top: 5px;
+            opacity: 0.8;
+        }
+
+        /* Barra de ferramentas */
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .tool-btn {
+            background: #1f2a44;
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        body.light .tool-btn {
+            background: #e5e7eb;
+            color: #1f2937;
+        }
+
+        .tool-btn:hover {
+            background: #3b82f6;
+            transform: scale(1.02);
+        }
+
+        /* Categorias */
+        .categories-bar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .cat-btn {
+            background: #111827;
+            border: 1px solid #2e4a7c;
+            color: #c7e2ff;
+            padding: 6px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        body.light .cat-btn {
+            background: #e5e7eb;
+            border-color: #9ca3af;
+            color: #1f2937;
+        }
+
+        .cat-btn.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        .cat-btn:hover {
+            background: #3b82f6;
+            color: white;
+        }
+
+        /* Ordenação */
+        .sort-select {
+            background: #111827;
+            border: 1px solid #2e4a7c;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        body.light .sort-select {
+            background: white;
+            border-color: #d1d5db;
+            color: #1f2937;
         }
 
         .search-section {
             max-width: 500px;
-            margin: 0 auto 30px auto;
+            margin: 0 auto 25px auto;
         }
 
         .search-box {
@@ -58,7 +200,6 @@
 
         .search-icon {
             color: #3b6cb0;
-            font-size: 18px;
             margin-right: 8px;
         }
 
@@ -68,12 +209,7 @@
             border: none;
             padding: 10px 0;
             font-size: 16px;
-            color: white;
             outline: none;
-        }
-
-        #searchInput::placeholder {
-            color: #6a7c9f;
         }
 
         .clear-search {
@@ -86,14 +222,9 @@
             display: none;
         }
 
-        .clear-search:hover {
-            background: #2e4a7c;
-        }
-
         .result-stats {
             text-align: center;
             font-size: 13px;
-            color: #8e9ec2;
             margin-top: 10px;
         }
 
@@ -110,11 +241,19 @@
             font-weight: bold;
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             z-index: 1000;
-            font-size: 14px;
         }
 
-        .admin-btn:hover {
-            background: #2563eb;
+        .theme-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: #1f2a44;
+            color: white;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            z-index: 1000;
         }
 
         .gallery {
@@ -131,12 +270,25 @@
             border: 1px solid #1f2a44;
             overflow: hidden;
             transition: all 0.2s;
+            position: relative;
         }
 
         .card:hover {
-            background: #131a2a;
-            border-color: #2e4a7c;
-            transform: translateY(-3px);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .hot-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ef4444;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            z-index: 10;
         }
 
         .card-img {
@@ -167,29 +319,62 @@
         .link-name {
             font-size: 18px;
             font-weight: bold;
-            margin-bottom: 14px;
-            word-break: break-word;
-            color: #eef3ff;
+            margin-bottom: 8px;
+        }
+
+        .link-category {
+            font-size: 11px;
+            color: #8a9bcf;
+            margin-bottom: 8px;
+            display: inline-block;
+            background: #1e2a44;
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
+
+        body.light .link-category {
+            background: #e5e7eb;
+            color: #4b5563;
+        }
+
+        .link-cliques {
+            font-size: 11px;
+            color: #6a7c9f;
+            margin-bottom: 12px;
+        }
+
+        .card-buttons {
+            display: flex;
+            gap: 8px;
         }
 
         .download-btn {
-            display: block;
-            width: 100%;
+            flex: 2;
             background: #0f2b4f;
             border: 1px solid #2a4870;
             color: #c7e2ff;
             text-align: center;
-            padding: 10px 0;
+            padding: 8px 0;
             border-radius: 40px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: bold;
             cursor: pointer;
-            text-decoration: none;
-            transition: all 0.2s;
         }
 
-        .download-btn:hover {
-            background: #1e3e64;
+        .share-btn {
+            flex: 1;
+            background: #1e2a44;
+            border: 1px solid #2a4870;
+            color: #c7e2ff;
+            text-align: center;
+            padding: 8px 0;
+            border-radius: 40px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .download-btn:hover, .share-btn:hover {
+            background: #3b82f6;
             color: white;
         }
 
@@ -198,8 +383,6 @@
             padding: 40px;
             background: #0c1120;
             border-radius: 30px;
-            color: #98a9cf;
-            font-size: 16px;
         }
 
         .modal {
@@ -221,7 +404,6 @@
             width: 90%;
             max-width: 600px;
             border-radius: 20px;
-            border: 1px solid #2e4a7c;
         }
 
         .modal-header {
@@ -231,18 +413,9 @@
             margin-bottom: 20px;
         }
 
-        .modal-header h2 {
-            color: #3b82f6;
-        }
-
         .close {
             cursor: pointer;
             font-size: 28px;
-            color: #8a9bcf;
-        }
-
-        .close:hover {
-            color: white;
         }
 
         .form-group {
@@ -252,23 +425,16 @@
         .form-group label {
             display: block;
             margin-bottom: 8px;
-            color: #8a9bcf;
             font-weight: bold;
         }
 
-        .form-group input {
+        .form-group input, .form-group select {
             width: 100%;
             padding: 10px;
             background: #080c14;
             border: 1px solid #1e2a44;
-            color: white;
             border-radius: 8px;
             font-size: 14px;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #3b82f6;
         }
 
         button {
@@ -279,11 +445,6 @@
             border-radius: 8px;
             cursor: pointer;
             margin-right: 10px;
-            font-size: 14px;
-        }
-
-        button:hover {
-            background: #2563eb;
         }
 
         .link-list {
@@ -300,94 +461,66 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border: 1px solid #1e2a44;
-        }
-
-        .link-item-info {
-            flex: 1;
-        }
-
-        .link-item-info strong {
-            color: #3b82f6;
-        }
-
-        .link-item-info small {
-            color: #6a7c9f;
-            font-size: 11px;
-        }
-
-        .link-item-buttons button {
-            margin-left: 5px;
-            padding: 5px 12px;
-            font-size: 12px;
-        }
-
-        .login-area {
-            text-align: center;
-            padding: 20px;
-        }
-
-        .login-area h3 {
-            margin-bottom: 20px;
-            color: #3b82f6;
-        }
-
-        .login-area input {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 15px;
-            background: #080c14;
-            border: 1px solid #1e2a44;
-            color: white;
-            border-radius: 8px;
-        }
-
-        hr {
-            margin: 20px 0;
-            border-color: #1e2a44;
         }
 
         .footer {
             text-align: center;
             margin-top: 40px;
             font-size: 11px;
-            color: #3e506e;
             padding: 15px;
         }
 
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #8a9bcf;
+        @media (max-width: 650px) {
+            .card {
+                width: 90%;
+            }
+            .toolbar {
+                flex-direction: column;
+                align-items: center;
+            }
         }
     </style>
 </head>
-<body>
-
+<body class="dark">
 <div class="container">
     <div class="header">
-        <div class="logo">LinKey</div>
-        <div class="sub">Galeria inteligente com painel administrativo</div>
+        <div class="logo">LinKey Turbo</div>
+        <div class="sub">Galeria com estatísticas, categorias e muito mais</div>
+    </div>
+
+    <div class="toolbar">
+        <button class="tool-btn" onclick="exportarBackup()">💾 Backup</button>
+        <button class="tool-btn" onclick="importarBackup()">📂 Restaurar</button>
+        <select id="sortSelect" class="sort-select" onchange="aplicarOrdenacao()">
+            <option value="nome">Ordenar por Nome (A-Z)</option>
+            <option value="cliques">Ordenar por Cliques (mais acessados)</option>
+            <option value="data">Ordenar por Data (mais recentes)</option>
+        </select>
+    </div>
+
+    <div class="categories-bar" id="categoriesBar">
+        <button class="cat-btn active" data-cat="all">📁 Todos</button>
     </div>
 
     <div class="search-section">
         <div class="search-box">
             <span class="search-icon">🔍</span>
-            <input type="text" id="searchInput" placeholder="Pesquisar por nome do link...">
+            <input type="text" id="searchInput" placeholder="Pesquisar...">
             <button class="clear-search" id="clearSearchBtn">✖</button>
         </div>
         <div class="result-stats" id="resultStats"></div>
     </div>
 
     <div id="galleryContainer" class="gallery">
-        <div class="loading">Carregando links...</div>
+        <div class="no-results">Carregando links...</div>
     </div>
 
     <div class="footer">
-        LinKey - Clique em "Baixar / Acessar" para ser redirecionado
+        LinKey Turbo - Última atualização: <span id="ultimaAtualizacao"></span>
     </div>
 </div>
 
+<button class="theme-btn" onclick="alternarTema()">🌓 Tema</button>
 <button class="admin-btn" onclick="abrirAdmin()">🔧 Admin</button>
 
 <div id="adminModal" class="modal">
@@ -400,11 +533,21 @@
     </div>
 </div>
 
+<!-- Modal de confirmação bonito -->
+<div id="confirmModal" class="modal" style="z-index: 3000;">
+    <div class="modal-content" style="max-width: 400px; text-align: center;">
+        <h3 id="confirmMsg">Tem certeza?</h3>
+        <div style="margin-top: 20px;">
+            <button id="confirmYes" style="background: #dc2626;">Excluir</button>
+            <button id="confirmNo" style="background: #6b7280;">Cancelar</button>
+        </div>
+    </div>
+</div>
+
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
 <script>
-    // Firebase configuration (SUAS CONFIGURAÇÕES)
     const firebaseConfig = {
         apiKey: "AIzaSyBxnecJ2b1MQyDNA6JDqcardi0TfPGnZKY",
         authDomain: "linkey-f167c.firebaseapp.com",
@@ -415,13 +558,20 @@
         measurementId: "G-36TREE8R23"
     };
     
-    // Inicializar Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
     
     let todosLinks = [];
     let adminLogado = false;
+    let categoriaAtual = "all";
+    let ordenacaoAtual = "nome";
+    let pendingDeleteId = null;
     const SENHA_ADMIN = "linkey123";
+    
+    function atualizarDataRodape() {
+        const agora = new Date();
+        document.getElementById("ultimaAtualizacao").innerHTML = agora.toLocaleString('pt-BR');
+    }
     
     async function carregarLinks() {
         try {
@@ -430,7 +580,10 @@
             snapshot.forEach(doc => {
                 todosLinks.push({
                     id: doc.id,
-                    ...doc.data()
+                    ...doc.data(),
+                    cliques: doc.data().cliques || 0,
+                    categoria: doc.data().categoria || "Geral",
+                    dataCriacao: doc.data().dataCriacao || new Date().toISOString()
                 });
             });
             
@@ -438,38 +591,92 @@
                 await criarLinksExemplo();
                 await carregarLinks();
             } else {
-                renderizarGaleria("");
+                atualizarCategorias();
+                aplicarOrdenacao();
             }
         } catch(erro) {
-            console.error("Erro:", erro);
-            document.getElementById("galleryContainer").innerHTML = '<div class="no-results">❌ Erro ao carregar links. Verifique sua internet e se o Firebase está configurado corretamente.</div>';
+            document.getElementById("galleryContainer").innerHTML = '<div class="no-results">❌ Erro ao carregar links.</div>';
         }
     }
     
     async function criarLinksExemplo() {
         const exemplos = [
-            { nome: "GitHub", url: "https://github.com", imagem: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" },
-            { nome: "Google", url: "https://google.com", imagem: "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" },
-            { nome: "Wikipedia", url: "https://wikipedia.org", imagem: "https://upload.wikimedia.org/wikipedia/commons/6/63/Wikipedia-logo.png" },
-            { nome: "YouTube", url: "https://youtube.com", imagem: "https://www.youtube.com/img/desktop/yt_1200.png" }
+            { nome: "GitHub", url: "https://github.com", imagem: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png", categoria: "Programação" },
+            { nome: "Google", url: "https://google.com", imagem: "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png", categoria: "Ferramentas" },
+            { nome: "Wikipedia", url: "https://wikipedia.org", imagem: "https://upload.wikimedia.org/wikipedia/commons/6/63/Wikipedia-logo.png", categoria: "Estudos" },
+            { nome: "YouTube", url: "https://youtube.com", imagem: "https://www.youtube.com/img/desktop/yt_1200.png", categoria: "Entretenimento" }
         ];
         
         for(let item of exemplos) {
-            await db.collection("links").add(item);
+            await db.collection("links").add({
+                ...item,
+                cliques: 0,
+                dataCriacao: new Date().toISOString()
+            });
         }
     }
     
-    function renderizarGaleria(busca) {
+    function atualizarCategorias() {
+        const categorias = [...new Set(todosLinks.map(l => l.categoria))];
+        const bar = document.getElementById("categoriesBar");
+        let html = '<button class="cat-btn active" data-cat="all" onclick="filtrarPorCategoria(\'all\')">📁 Todos</button>';
+        categorias.forEach(cat => {
+            html += `<button class="cat-btn" data-cat="${cat}" onclick="filtrarPorCategoria('${cat}')">📂 ${cat}</button>`;
+        });
+        bar.innerHTML = html;
+    }
+    
+    function filtrarPorCategoria(cat) {
+        categoriaAtual = cat;
+        document.querySelectorAll('.cat-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if(btn.getAttribute('data-cat') === cat) btn.classList.add('active');
+        });
+        aplicarOrdenacao();
+    }
+    
+    function aplicarOrdenacao() {
+        ordenacaoAtual = document.getElementById("sortSelect").value;
+        let linksFiltrados = [...todosLinks];
+        
+        if(categoriaAtual !== "all") {
+            linksFiltrados = linksFiltrados.filter(l => l.categoria === categoriaAtual);
+        }
+        
+        if(ordenacaoAtual === "nome") {
+            linksFiltrados.sort((a,b) => a.nome.localeCompare(b.nome));
+        } else if(ordenacaoAtual === "cliques") {
+            linksFiltrados.sort((a,b) => b.cliques - a.cliques);
+        } else if(ordenacaoAtual === "data") {
+            linksFiltrados.sort((a,b) => new Date(b.dataCriacao) - new Date(a.dataCriacao));
+        }
+        
+        renderizarGaleria(linksFiltrados, document.getElementById("searchInput").value);
+    }
+    
+    async function contarClique(id) {
+        const link = todosLinks.find(l => l.id === id);
+        if(link) {
+            const novosCliques = (link.cliques || 0) + 1;
+            await db.collection("links").doc(id).update({ cliques: novosCliques });
+            link.cliques = novosCliques;
+            aplicarOrdenacao();
+        }
+    }
+    
+    function renderizarGaleria(links, busca) {
         const container = document.getElementById("galleryContainer");
         const statsDiv = document.getElementById("resultStats");
         const termo = busca.toLowerCase().trim();
         
-        let filtrados = todosLinks;
+        let filtrados = links;
         if(termo !== "") {
-            filtrados = todosLinks.filter(link => link.nome.toLowerCase().includes(termo));
+            filtrados = links.filter(link => link.nome.toLowerCase().includes(termo));
         }
         
-        statsDiv.innerHTML = `${filtrados.length} link${filtrados.length !== 1 ? 's' : ''} disponível${termo !== "" ? ` para "${busca}"` : ""}`;
+        const maxCliques = Math.max(...filtrados.map(l => l.cliques), 0);
+        
+        statsDiv.innerHTML = `${filtrados.length} link${filtrados.length !== 1 ? 's' : ''} encontrado${termo !== "" ? ` para "${busca}"` : ""}`;
         
         if(filtrados.length === 0) {
             container.innerHTML = '<div class="no-results">🔎 Nenhum link encontrado.</div>';
@@ -478,19 +685,39 @@
         
         let html = "";
         for(let link of filtrados) {
+            const ehHot = link.cliques === maxCliques && maxCliques > 0;
             html += `
                 <div class="card">
+                    ${ehHot ? '<div class="hot-badge">🔥 Mais clicado</div>' : ''}
                     <div class="card-img">
                         <img src="${link.imagem}" alt="${link.nome}" onerror="this.onerror=null; this.style.display='none'; this.parentNode.innerHTML += '<span class=fallback-icon>🖼️</span>'">
                     </div>
                     <div class="card-content">
                         <div class="link-name">${escapeHtml(link.nome)}</div>
-                        <button class="download-btn" onclick="window.open('${link.url}', '_blank')">⬇️ Baixar / Acessar</button>
+                        <span class="link-category">📂 ${escapeHtml(link.categoria)}</span>
+                        <div class="link-cliques">👁️ ${link.cliques || 0} cliques</div>
+                        <div class="card-buttons">
+                            <button class="download-btn" onclick="window.open('${link.url}', '_blank'); contarClique('${link.id}')">⬇️ Acessar</button>
+                            <button class="share-btn" onclick="compartilharLink('${link.url}', '${link.nome}')">🔗 Compartilhar</button>
+                        </div>
                     </div>
                 </div>
             `;
         }
         container.innerHTML = html;
+        atualizarDataRodape();
+    }
+    
+    function compartilharLink(url, nome) {
+        if(navigator.share) {
+            navigator.share({
+                title: nome,
+                url: url
+            });
+        } else {
+            navigator.clipboard.writeText(url);
+            alert(`🔗 Link "${nome}" copiado!`);
+        }
     }
     
     function escapeHtml(str) {
@@ -503,13 +730,35 @@
         });
     }
     
+    // Confirmação bonita
+    function confirmarExclusao(id) {
+        pendingDeleteId = id;
+        document.getElementById("confirmModal").style.display = "block";
+    }
+    
+    document.getElementById("confirmYes").onclick = async function() {
+        if(pendingDeleteId) {
+            await db.collection("links").doc(pendingDeleteId).delete();
+            await carregarLinks();
+            if(adminLogado) await listarLinksAdmin();
+            pendingDeleteId = null;
+        }
+        document.getElementById("confirmModal").style.display = "none";
+    };
+    
+    document.getElementById("confirmNo").onclick = function() {
+        pendingDeleteId = null;
+        document.getElementById("confirmModal").style.display = "none";
+    };
+    
+    // Admin
     function abrirAdmin() {
         document.getElementById("adminModal").style.display = "block";
         if(!adminLogado) {
             document.getElementById("adminContent").innerHTML = `
-                <div class="login-area">
-                    <h3>🔐 Login Administrativo</h3>
-                    <input type="password" id="adminSenha" placeholder="Digite a senha" onkeypress="if(event.key==='Enter') fazerLogin()">
+                <div class="login-area" style="text-align:center;padding:20px">
+                    <h3>🔐 Login</h3>
+                    <input type="password" id="adminSenha" placeholder="Senha" onkeypress="if(event.key==='Enter') fazerLogin()" style="width:100%;margin:10px 0">
                     <button onclick="fazerLogin()">Entrar</button>
                 </div>
             `;
@@ -528,7 +777,7 @@
             adminLogado = true;
             mostrarPainelAdmin();
         } else {
-            alert("❌ Senha incorreta!");
+            alert("Senha incorreta!");
         }
     }
     
@@ -536,17 +785,25 @@
         const content = document.getElementById("adminContent");
         content.innerHTML = `
             <div class="form-group">
-                <h3>➕ Adicionar novo link</h3>
-                <label>Nome do link:</label>
-                <input type="text" id="novoNome" placeholder="Ex: Meu Site">
-                <label>URL de destino:</label>
-                <input type="text" id="novaUrl" placeholder="https://...">
-                <label>URL da imagem (opcional):</label>
-                <input type="text" id="novaImagem" placeholder="https://...">
+                <h3>➕ Adicionar link</h3>
+                <label>Nome:</label>
+                <input type="text" id="novoNome">
+                <label>URL:</label>
+                <input type="text" id="novaUrl">
+                <label>Imagem URL:</label>
+                <input type="text" id="novaImagem">
+                <label>Categoria:</label>
+                <select id="novaCategoria">
+                    <option>Geral</option>
+                    <option>Programação</option>
+                    <option>Estudos</option>
+                    <option>Entretenimento</option>
+                    <option>Ferramentas</option>
+                </select>
                 <button onclick="adicionarLink()">➕ Adicionar</button>
             </div>
             <hr>
-            <h3>📋 Links existentes (${todosLinks.length})</h3>
+            <h3>📋 Links (${todosLinks.length})</h3>
             <div id="listaLinksAdmin" class="link-list"></div>
         `;
         await listarLinksAdmin();
@@ -555,48 +812,44 @@
     async function listarLinksAdmin() {
         const listaDiv = document.getElementById("listaLinksAdmin");
         if(!listaDiv) return;
-        
-        const snapshot = await db.collection("links").orderBy("nome").get();
         let html = "";
-        snapshot.forEach(doc => {
-            const data = doc.data();
+        for(let link of todosLinks) {
             html += `
                 <div class="link-item">
-                    <div class="link-item-info">
-                        <strong>${escapeHtml(data.nome)}</strong><br>
-                        <small>${data.url.substring(0, 50)}${data.url.length > 50 ? '...' : ''}</small>
+                    <div style="flex:1">
+                        <strong>${escapeHtml(link.nome)}</strong><br>
+                        <small>${link.categoria} | ${link.cliques || 0} cliques</small>
                     </div>
-                    <div class="link-item-buttons">
-                        <button onclick="editarLink('${doc.id}', '${escapeHtml(data.nome)}', '${escapeHtml(data.url)}', '${escapeHtml(data.imagem)}')">✏️ Editar</button>
-                        <button onclick="excluirLink('${doc.id}')" style="background:#dc2626">🗑️ Excluir</button>
+                    <div>
+                        <button onclick="editarLink('${link.id}')">✏️</button>
+                        <button onclick="confirmarExclusao('${link.id}')" style="background:#dc2626">🗑️</button>
                     </div>
                 </div>
             `;
-        });
-        listaDiv.innerHTML = html || "<p>Nenhum link cadastrado.</p>";
+        }
+        listaDiv.innerHTML = html || "<p>Nenhum link.</p>";
     }
     
     async function adicionarLink() {
         const nome = document.getElementById("novoNome").value.trim();
         const url = document.getElementById("novaUrl").value.trim();
         let imagem = document.getElementById("novaImagem").value.trim();
+        const categoria = document.getElementById("novaCategoria").value;
         
         if(!nome || !url) {
-            alert("❌ Nome e URL são obrigatórios!");
+            alert("Nome e URL são obrigatórios!");
             return;
         }
         
-        if(!imagem) {
-            imagem = "https://via.placeholder.com/200x150?text=Sem+Imagem";
-        }
+        if(!imagem) imagem = "https://via.placeholder.com/200x150?text=Sem+Imagem";
         
         await db.collection("links").add({
-            nome: nome,
-            url: url,
-            imagem: imagem
+            nome, url, imagem, categoria,
+            cliques: 0,
+            dataCriacao: new Date().toISOString()
         });
         
-        alert("✅ Link adicionado com sucesso!");
+        alert("Link adicionado!");
         document.getElementById("novoNome").value = "";
         document.getElementById("novaUrl").value = "";
         document.getElementById("novaImagem").value = "";
@@ -604,44 +857,99 @@
         await listarLinksAdmin();
     }
     
-    async function excluirLink(id) {
-        if(confirm("⚠️ Tem certeza que deseja excluir este link permanentemente?")) {
-            await db.collection("links").doc(id).delete();
-            alert("✅ Link excluído!");
-            await carregarLinks();
-            await listarLinksAdmin();
-        }
-    }
-    
-    async function editarLink(id, nomeAtual, urlAtual, imgAtual) {
-        const novoNome = prompt("✏️ Editar nome:", nomeAtual);
+    async function editarLink(id) {
+        const link = todosLinks.find(l => l.id === id);
+        const novoNome = prompt("Novo nome:", link.nome);
         if(!novoNome) return;
-        
-        const novaUrl = prompt("✏️ Editar URL:", urlAtual);
+        const novaUrl = prompt("Nova URL:", link.url);
         if(!novaUrl) return;
-        
-        const novaImg = prompt("✏️ Editar imagem URL (ou deixe em branco):", imgAtual);
+        const novaCategoria = prompt("Nova categoria:", link.categoria);
         
         await db.collection("links").doc(id).update({
             nome: novoNome,
             url: novaUrl,
-            imagem: novaImg || "https://via.placeholder.com/200x150?text=Sem+Imagem"
+            categoria: novaCategoria || link.categoria
         });
         
-        alert("✅ Link atualizado!");
+        alert("Link atualizado!");
         await carregarLinks();
         await listarLinksAdmin();
     }
     
+    // Backup
+    function exportarBackup() {
+        const dados = JSON.stringify(todosLinks, null, 2);
+        const blob = new Blob([dados], {type: 'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `linkey-backup-${new Date().toISOString().slice(0,19)}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+    
+    function importarBackup() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'application/json';
+        input.onchange = async (e) => {
+            const file = e.target.files[0];
+            const text = await file.text();
+            const links = JSON.parse(text);
+            for(let link of links) {
+                await db.collection("links").add({
+                    nome: link.nome,
+                    url: link.url,
+                    imagem: link.imagem || "https://via.placeholder.com/200x150?text=Sem+Imagem",
+                    categoria: link.categoria || "Geral",
+                    cliques: link.cliques || 0,
+                    dataCriacao: link.dataCriacao || new Date().toISOString()
+                });
+            }
+            alert(`${links.length} links restaurados!`);
+            await carregarLinks();
+        };
+        input.click();
+    }
+    
+    // Tema
+    function alternarTema() {
+        const body = document.body;
+        if(body.classList.contains('dark')) {
+            body.classList.remove('dark');
+            body.classList.add('light');
+            localStorage.setItem('tema', 'light');
+        } else {
+            body.classList.remove('light');
+            body.classList.add('dark');
+            localStorage.setItem('tema', 'dark');
+        }
+    }
+    
+    const temaSalvo = localStorage.getItem('tema');
+    if(temaSalvo === 'light') document.body.classList.add('light');
+    
+    // Pesquisa
     document.getElementById("searchInput").addEventListener("input", function(e) {
-        renderizarGaleria(e.target.value);
+        aplicarOrdenacao();
         document.getElementById("clearSearchBtn").style.display = e.target.value ? "inline-block" : "none";
     });
-    
     document.getElementById("clearSearchBtn").addEventListener("click", function() {
         document.getElementById("searchInput").value = "";
-        renderizarGaleria("");
+        aplicarOrdenacao();
         this.style.display = "none";
+    });
+    
+    // Atalhos de teclado
+    document.addEventListener('keydown', function(e) {
+        if(e.ctrlKey && e.key === 'k') {
+            e.preventDefault();
+            abrirAdmin();
+        }
+        if(e.key === '/') {
+            e.preventDefault();
+            document.getElementById("searchInput").focus();
+        }
     });
     
     carregarLinks();
