@@ -11,7 +11,6 @@
             box-sizing: border-box;
         }
 
-        /* Temas */
         body {
             font-family: Arial, Helvetica, sans-serif;
             padding: 20px;
@@ -75,6 +74,17 @@
             border-color: #e5e7eb;
         }
 
+        body.light .tool-btn {
+            background: #e5e7eb;
+            color: #1f2937;
+        }
+
+        body.light .sort-select {
+            background: white;
+            border-color: #d1d5db;
+            color: #1f2937;
+        }
+
         .container {
             max-width: 1400px;
             margin: 0 auto;
@@ -100,7 +110,6 @@
             opacity: 0.8;
         }
 
-        /* Barra de ferramentas */
         .toolbar {
             display: flex;
             flex-wrap: wrap;
@@ -120,68 +129,19 @@
             transition: all 0.2s;
         }
 
-        body.light .tool-btn {
-            background: #e5e7eb;
-            color: #1f2937;
-        }
-
         .tool-btn:hover {
             background: #3b82f6;
             transform: scale(1.02);
         }
 
-        /* Categorias */
-        .categories-bar {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 25px;
-        }
-
-        .cat-btn {
-            background: #111827;
-            border: 1px solid #2e4a7c;
-            color: #c7e2ff;
-            padding: 6px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 13px;
-            transition: all 0.2s;
-        }
-
-        body.light .cat-btn {
-            background: #e5e7eb;
-            border-color: #9ca3af;
-            color: #1f2937;
-        }
-
-        .cat-btn.active {
-            background: #3b82f6;
-            color: white;
-            border-color: #3b82f6;
-        }
-
-        .cat-btn:hover {
-            background: #3b82f6;
-            color: white;
-        }
-
-        /* Ordenação */
         .sort-select {
             background: #111827;
             border: 1px solid #2e4a7c;
             color: white;
-            padding: 6px 12px;
-            border-radius: 20px;
+            padding: 8px 16px;
+            border-radius: 25px;
             cursor: pointer;
             font-size: 13px;
-        }
-
-        body.light .sort-select {
-            background: white;
-            border-color: #d1d5db;
-            color: #1f2937;
         }
 
         .search-section {
@@ -210,6 +170,11 @@
             padding: 10px 0;
             font-size: 16px;
             outline: none;
+            color: white;
+        }
+
+        body.light #searchInput {
+            color: #1f2937;
         }
 
         .clear-search {
@@ -322,21 +287,6 @@
             margin-bottom: 8px;
         }
 
-        .link-category {
-            font-size: 11px;
-            color: #8a9bcf;
-            margin-bottom: 8px;
-            display: inline-block;
-            background: #1e2a44;
-            padding: 2px 8px;
-            border-radius: 12px;
-        }
-
-        body.light .link-category {
-            background: #e5e7eb;
-            color: #4b5563;
-        }
-
         .link-cliques {
             font-size: 11px;
             color: #6a7c9f;
@@ -428,13 +378,19 @@
             font-weight: bold;
         }
 
-        .form-group input, .form-group select {
+        .form-group input {
             width: 100%;
             padding: 10px;
             background: #080c14;
             border: 1px solid #1e2a44;
             border-radius: 8px;
             font-size: 14px;
+            color: white;
+        }
+
+        body.light .form-group input {
+            background: #f9fafb;
+            color: #1f2937;
         }
 
         button {
@@ -463,6 +419,10 @@
             align-items: center;
         }
 
+        body.light .link-item {
+            background: #f9fafb;
+        }
+
         .footer {
             text-align: center;
             margin-top: 40px;
@@ -485,21 +445,15 @@
 <div class="container">
     <div class="header">
         <div class="logo">LinKey Turbo</div>
-        <div class="sub">Galeria com estatísticas, categorias e muito mais</div>
+        <div class="sub">Galeria com estatísticas e ordenação</div>
     </div>
 
     <div class="toolbar">
-        <button class="tool-btn" onclick="exportarBackup()">💾 Backup</button>
-        <button class="tool-btn" onclick="importarBackup()">📂 Restaurar</button>
         <select id="sortSelect" class="sort-select" onchange="aplicarOrdenacao()">
             <option value="nome">Ordenar por Nome (A-Z)</option>
             <option value="cliques">Ordenar por Cliques (mais acessados)</option>
             <option value="data">Ordenar por Data (mais recentes)</option>
         </select>
-    </div>
-
-    <div class="categories-bar" id="categoriesBar">
-        <button class="cat-btn active" data-cat="all">📁 Todos</button>
     </div>
 
     <div class="search-section">
@@ -533,10 +487,9 @@
     </div>
 </div>
 
-<!-- Modal de confirmação bonito -->
 <div id="confirmModal" class="modal" style="z-index: 3000;">
     <div class="modal-content" style="max-width: 400px; text-align: center;">
-        <h3 id="confirmMsg">Tem certeza?</h3>
+        <h3 id="confirmMsg">Tem certeza que deseja excluir?</h3>
         <div style="margin-top: 20px;">
             <button id="confirmYes" style="background: #dc2626;">Excluir</button>
             <button id="confirmNo" style="background: #6b7280;">Cancelar</button>
@@ -563,7 +516,6 @@
     
     let todosLinks = [];
     let adminLogado = false;
-    let categoriaAtual = "all";
     let ordenacaoAtual = "nome";
     let pendingDeleteId = null;
     const SENHA_ADMIN = "linkey123";
@@ -582,7 +534,6 @@
                     id: doc.id,
                     ...doc.data(),
                     cliques: doc.data().cliques || 0,
-                    categoria: doc.data().categoria || "Geral",
                     dataCriacao: doc.data().dataCriacao || new Date().toISOString()
                 });
             });
@@ -591,7 +542,6 @@
                 await criarLinksExemplo();
                 await carregarLinks();
             } else {
-                atualizarCategorias();
                 aplicarOrdenacao();
             }
         } catch(erro) {
@@ -601,10 +551,10 @@
     
     async function criarLinksExemplo() {
         const exemplos = [
-            { nome: "GitHub", url: "https://github.com", imagem: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png", categoria: "Programação" },
-            { nome: "Google", url: "https://google.com", imagem: "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png", categoria: "Ferramentas" },
-            { nome: "Wikipedia", url: "https://wikipedia.org", imagem: "https://upload.wikimedia.org/wikipedia/commons/6/63/Wikipedia-logo.png", categoria: "Estudos" },
-            { nome: "YouTube", url: "https://youtube.com", imagem: "https://www.youtube.com/img/desktop/yt_1200.png", categoria: "Entretenimento" }
+            { nome: "GitHub", url: "https://github.com", imagem: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" },
+            { nome: "Google", url: "https://google.com", imagem: "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" },
+            { nome: "Wikipedia", url: "https://wikipedia.org", imagem: "https://upload.wikimedia.org/wikipedia/commons/6/63/Wikipedia-logo.png" },
+            { nome: "YouTube", url: "https://youtube.com", imagem: "https://www.youtube.com/img/desktop/yt_1200.png" }
         ];
         
         for(let item of exemplos) {
@@ -616,32 +566,9 @@
         }
     }
     
-    function atualizarCategorias() {
-        const categorias = [...new Set(todosLinks.map(l => l.categoria))];
-        const bar = document.getElementById("categoriesBar");
-        let html = '<button class="cat-btn active" data-cat="all" onclick="filtrarPorCategoria(\'all\')">📁 Todos</button>';
-        categorias.forEach(cat => {
-            html += `<button class="cat-btn" data-cat="${cat}" onclick="filtrarPorCategoria('${cat}')">📂 ${cat}</button>`;
-        });
-        bar.innerHTML = html;
-    }
-    
-    function filtrarPorCategoria(cat) {
-        categoriaAtual = cat;
-        document.querySelectorAll('.cat-btn').forEach(btn => {
-            btn.classList.remove('active');
-            if(btn.getAttribute('data-cat') === cat) btn.classList.add('active');
-        });
-        aplicarOrdenacao();
-    }
-    
     function aplicarOrdenacao() {
         ordenacaoAtual = document.getElementById("sortSelect").value;
         let linksFiltrados = [...todosLinks];
-        
-        if(categoriaAtual !== "all") {
-            linksFiltrados = linksFiltrados.filter(l => l.categoria === categoriaAtual);
-        }
         
         if(ordenacaoAtual === "nome") {
             linksFiltrados.sort((a,b) => a.nome.localeCompare(b.nome));
@@ -694,7 +621,6 @@
                     </div>
                     <div class="card-content">
                         <div class="link-name">${escapeHtml(link.nome)}</div>
-                        <span class="link-category">📂 ${escapeHtml(link.categoria)}</span>
                         <div class="link-cliques">👁️ ${link.cliques || 0} cliques</div>
                         <div class="card-buttons">
                             <button class="download-btn" onclick="window.open('${link.url}', '_blank'); contarClique('${link.id}')">⬇️ Acessar</button>
@@ -730,7 +656,6 @@
         });
     }
     
-    // Confirmação bonita
     function confirmarExclusao(id) {
         pendingDeleteId = id;
         document.getElementById("confirmModal").style.display = "block";
@@ -751,14 +676,13 @@
         document.getElementById("confirmModal").style.display = "none";
     };
     
-    // Admin
     function abrirAdmin() {
         document.getElementById("adminModal").style.display = "block";
         if(!adminLogado) {
             document.getElementById("adminContent").innerHTML = `
-                <div class="login-area" style="text-align:center;padding:20px">
-                    <h3>🔐 Login</h3>
-                    <input type="password" id="adminSenha" placeholder="Senha" onkeypress="if(event.key==='Enter') fazerLogin()" style="width:100%;margin:10px 0">
+                <div style="text-align:center;padding:20px">
+                    <h3>🔐 Login Administrativo</h3>
+                    <input type="password" id="adminSenha" placeholder="Digite a senha" onkeypress="if(event.key==='Enter') fazerLogin()" style="width:100%;margin:10px 0;padding:10px">
                     <button onclick="fazerLogin()">Entrar</button>
                 </div>
             `;
@@ -777,7 +701,7 @@
             adminLogado = true;
             mostrarPainelAdmin();
         } else {
-            alert("Senha incorreta!");
+            alert("❌ Senha incorreta!");
         }
     }
     
@@ -785,25 +709,17 @@
         const content = document.getElementById("adminContent");
         content.innerHTML = `
             <div class="form-group">
-                <h3>➕ Adicionar link</h3>
-                <label>Nome:</label>
-                <input type="text" id="novoNome">
-                <label>URL:</label>
-                <input type="text" id="novaUrl">
-                <label>Imagem URL:</label>
-                <input type="text" id="novaImagem">
-                <label>Categoria:</label>
-                <select id="novaCategoria">
-                    <option>Geral</option>
-                    <option>Programação</option>
-                    <option>Estudos</option>
-                    <option>Entretenimento</option>
-                    <option>Ferramentas</option>
-                </select>
+                <h3>➕ Adicionar novo link</h3>
+                <label>Nome do link:</label>
+                <input type="text" id="novoNome" placeholder="Ex: Meu Site">
+                <label>URL de destino:</label>
+                <input type="text" id="novaUrl" placeholder="https://...">
+                <label>URL da imagem (opcional):</label>
+                <input type="text" id="novaImagem" placeholder="https://...">
                 <button onclick="adicionarLink()">➕ Adicionar</button>
             </div>
             <hr>
-            <h3>📋 Links (${todosLinks.length})</h3>
+            <h3>📋 Links existentes (${todosLinks.length})</h3>
             <div id="listaLinksAdmin" class="link-list"></div>
         `;
         await listarLinksAdmin();
@@ -818,38 +734,37 @@
                 <div class="link-item">
                     <div style="flex:1">
                         <strong>${escapeHtml(link.nome)}</strong><br>
-                        <small>${link.categoria} | ${link.cliques || 0} cliques</small>
+                        <small>${link.cliques || 0} cliques</small>
                     </div>
                     <div>
-                        <button onclick="editarLink('${link.id}')">✏️</button>
-                        <button onclick="confirmarExclusao('${link.id}')" style="background:#dc2626">🗑️</button>
+                        <button onclick="editarLink('${link.id}')">✏️ Editar</button>
+                        <button onclick="confirmarExclusao('${link.id}')" style="background:#dc2626">🗑️ Excluir</button>
                     </div>
                 </div>
             `;
         }
-        listaDiv.innerHTML = html || "<p>Nenhum link.</p>";
+        listaDiv.innerHTML = html || "<p>Nenhum link cadastrado.</p>";
     }
     
     async function adicionarLink() {
         const nome = document.getElementById("novoNome").value.trim();
         const url = document.getElementById("novaUrl").value.trim();
         let imagem = document.getElementById("novaImagem").value.trim();
-        const categoria = document.getElementById("novaCategoria").value;
         
         if(!nome || !url) {
-            alert("Nome e URL são obrigatórios!");
+            alert("❌ Nome e URL são obrigatórios!");
             return;
         }
         
         if(!imagem) imagem = "https://via.placeholder.com/200x150?text=Sem+Imagem";
         
         await db.collection("links").add({
-            nome, url, imagem, categoria,
+            nome, url, imagem,
             cliques: 0,
             dataCriacao: new Date().toISOString()
         });
         
-        alert("Link adicionado!");
+        alert("✅ Link adicionado com sucesso!");
         document.getElementById("novoNome").value = "";
         document.getElementById("novaUrl").value = "";
         document.getElementById("novaImagem").value = "";
@@ -859,60 +774,21 @@
     
     async function editarLink(id) {
         const link = todosLinks.find(l => l.id === id);
-        const novoNome = prompt("Novo nome:", link.nome);
+        const novoNome = prompt("✏️ Editar nome:", link.nome);
         if(!novoNome) return;
-        const novaUrl = prompt("Nova URL:", link.url);
+        const novaUrl = prompt("✏️ Editar URL:", link.url);
         if(!novaUrl) return;
-        const novaCategoria = prompt("Nova categoria:", link.categoria);
         
         await db.collection("links").doc(id).update({
             nome: novoNome,
-            url: novaUrl,
-            categoria: novaCategoria || link.categoria
+            url: novaUrl
         });
         
-        alert("Link atualizado!");
+        alert("✅ Link atualizado!");
         await carregarLinks();
         await listarLinksAdmin();
     }
     
-    // Backup
-    function exportarBackup() {
-        const dados = JSON.stringify(todosLinks, null, 2);
-        const blob = new Blob([dados], {type: 'application/json'});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `linkey-backup-${new Date().toISOString().slice(0,19)}.json`;
-        a.click();
-        URL.revokeObjectURL(url);
-    }
-    
-    function importarBackup() {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = 'application/json';
-        input.onchange = async (e) => {
-            const file = e.target.files[0];
-            const text = await file.text();
-            const links = JSON.parse(text);
-            for(let link of links) {
-                await db.collection("links").add({
-                    nome: link.nome,
-                    url: link.url,
-                    imagem: link.imagem || "https://via.placeholder.com/200x150?text=Sem+Imagem",
-                    categoria: link.categoria || "Geral",
-                    cliques: link.cliques || 0,
-                    dataCriacao: link.dataCriacao || new Date().toISOString()
-                });
-            }
-            alert(`${links.length} links restaurados!`);
-            await carregarLinks();
-        };
-        input.click();
-    }
-    
-    // Tema
     function alternarTema() {
         const body = document.body;
         if(body.classList.contains('dark')) {
@@ -929,18 +805,17 @@
     const temaSalvo = localStorage.getItem('tema');
     if(temaSalvo === 'light') document.body.classList.add('light');
     
-    // Pesquisa
     document.getElementById("searchInput").addEventListener("input", function(e) {
         aplicarOrdenacao();
         document.getElementById("clearSearchBtn").style.display = e.target.value ? "inline-block" : "none";
     });
+    
     document.getElementById("clearSearchBtn").addEventListener("click", function() {
         document.getElementById("searchInput").value = "";
         aplicarOrdenacao();
         this.style.display = "none";
     });
     
-    // Atalhos de teclado
     document.addEventListener('keydown', function(e) {
         if(e.ctrlKey && e.key === 'k') {
             e.preventDefault();
