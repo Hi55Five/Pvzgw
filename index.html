@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LinKey Turbo - Galeria Avançada</title>
+    <title>LinKey - Comunitário</title>
     <style>
         * {
             margin: 0;
@@ -63,7 +63,7 @@
             border-color: #d1d5db;
         }
 
-        body.light .form-group input {
+        body.light .form-group input, body.light .form-group textarea {
             background: #f9fafb;
             border-color: #d1d5db;
             color: #1f2937;
@@ -74,14 +74,8 @@
             border-color: #e5e7eb;
         }
 
-        body.light .tool-btn {
+        body.light .tool-btn, body.light .tab-btn {
             background: #e5e7eb;
-            color: #1f2937;
-        }
-
-        body.light .sort-select {
-            background: white;
-            border-color: #d1d5db;
             color: #1f2937;
         }
 
@@ -92,7 +86,7 @@
 
         .header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
         .logo {
@@ -104,10 +98,59 @@
             color: transparent;
         }
 
-        .sub {
+        .user-info {
+            text-align: right;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #0f1420;
+            border-radius: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        body.light .user-info {
+            background: #e5e7eb;
+        }
+
+        .user-email {
             font-size: 14px;
-            margin-top: 5px;
-            opacity: 0.8;
+        }
+
+        .logout-btn {
+            background: #dc2626;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        /* Abas */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: #1f2a44;
+            border: none;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: #3b82f6;
+        }
+
+        .tab-btn:hover {
+            background: #3b82f6;
         }
 
         .toolbar {
@@ -126,12 +169,6 @@
             border-radius: 25px;
             cursor: pointer;
             font-size: 13px;
-            transition: all 0.2s;
-        }
-
-        .tool-btn:hover {
-            background: #3b82f6;
-            transform: scale(1.02);
         }
 
         .sort-select {
@@ -141,7 +178,12 @@
             padding: 8px 16px;
             border-radius: 25px;
             cursor: pointer;
-            font-size: 13px;
+        }
+
+        body.light .sort-select {
+            background: white;
+            border-color: #d1d5db;
+            color: #1f2937;
         }
 
         .search-section {
@@ -193,34 +235,6 @@
             margin-top: 10px;
         }
 
-        .admin-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #3b82f6;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: bold;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            z-index: 1000;
-        }
-
-        .theme-btn {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background: #1f2a44;
-            color: white;
-            border: none;
-            padding: 12px 16px;
-            border-radius: 50px;
-            cursor: pointer;
-            z-index: 1000;
-        }
-
         .gallery {
             display: flex;
             flex-wrap: wrap;
@@ -229,7 +243,7 @@
         }
 
         .card {
-            width: 280px;
+            width: 300px;
             background: #0f1420;
             border-radius: 20px;
             border: 1px solid #1f2a44;
@@ -253,12 +267,11 @@
             border-radius: 20px;
             font-size: 11px;
             font-weight: bold;
-            z-index: 10;
         }
 
         .card-img {
             width: 100%;
-            height: 170px;
+            height: 160px;
             background: #080c14;
             display: flex;
             align-items: center;
@@ -278,19 +291,33 @@
         }
 
         .card-content {
-            padding: 14px 12px 18px;
+            padding: 12px;
         }
 
         .link-name {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        .link-note {
+            font-size: 12px;
+            color: #8a9bcf;
             margin-bottom: 8px;
+            padding: 6px;
+            background: #080c14;
+            border-radius: 8px;
+        }
+
+        body.light .link-note {
+            background: #f3f4f6;
+            color: #4b5563;
         }
 
         .link-cliques {
             font-size: 11px;
             color: #6a7c9f;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
         .card-buttons {
@@ -328,6 +355,33 @@
             color: white;
         }
 
+        /* Pedidos */
+        .pedido-card {
+            background: #0f1420;
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #2e4a7c;
+        }
+
+        .pedido-status {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            margin-top: 8px;
+        }
+
+        .status-pendente { background: #f59e0b; color: #1a1a2e; }
+        .status-aprovado { background: #10b981; color: white; }
+        .status-recusado { background: #ef4444; color: white; }
+
+        .admin-actions {
+            margin-top: 10px;
+            display: flex;
+            gap: 8px;
+        }
+
         .no-results {
             text-align: center;
             padding: 40px;
@@ -352,7 +406,7 @@
             margin: 50px auto;
             padding: 25px;
             width: 90%;
-            max-width: 600px;
+            max-width: 500px;
             border-radius: 20px;
         }
 
@@ -369,16 +423,16 @@
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
             font-weight: bold;
         }
 
-        .form-group input {
+        .form-group input, .form-group textarea, .form-group select {
             width: 100%;
             padding: 10px;
             background: #080c14;
@@ -388,7 +442,8 @@
             color: white;
         }
 
-        body.light .form-group input {
+        body.light .form-group input, 
+        body.light .form-group textarea {
             background: #f9fafb;
             color: #1f2937;
         }
@@ -400,27 +455,6 @@
             padding: 10px 20px;
             border-radius: 8px;
             cursor: pointer;
-            margin-right: 10px;
-        }
-
-        .link-list {
-            margin-top: 20px;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .link-item {
-            background: #080c14;
-            padding: 12px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        body.light .link-item {
-            background: #f9fafb;
         }
 
         .footer {
@@ -430,68 +464,146 @@
             padding: 15px;
         }
 
+        .theme-btn, .admin-btn {
+            position: fixed;
+            bottom: 20px;
+            padding: 12px 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        .theme-btn {
+            left: 20px;
+            background: #1f2a44;
+            color: white;
+        }
+
+        .admin-btn {
+            right: 20px;
+            background: #3b82f6;
+            color: white;
+        }
+
         @media (max-width: 650px) {
-            .card {
-                width: 90%;
-            }
-            .toolbar {
-                flex-direction: column;
-                align-items: center;
-            }
+            .card { width: 95%; }
+            .user-info { flex-direction: column; gap: 10px; text-align: center; }
         }
     </style>
 </head>
 <body class="dark">
 <div class="container">
     <div class="header">
-        <div class="logo">LinKey Turbo</div>
-        <div class="sub">Galeria com estatísticas e ordenação</div>
+        <div class="logo">LinKey Comunitário</div>
+        <div class="sub">Peça links, adicione notas e faça parte</div>
     </div>
 
-    <div class="toolbar">
-        <select id="sortSelect" class="sort-select" onchange="aplicarOrdenacao()">
-            <option value="nome">Ordenar por Nome (A-Z)</option>
-            <option value="cliques">Ordenar por Cliques (mais acessados)</option>
-            <option value="data">Ordenar por Data (mais recentes)</option>
-        </select>
-    </div>
-
-    <div class="search-section">
-        <div class="search-box">
-            <span class="search-icon">🔍</span>
-            <input type="text" id="searchInput" placeholder="Pesquisar...">
-            <button class="clear-search" id="clearSearchBtn">✖</button>
+    <div class="user-info" id="userInfo">
+        <span class="user-email" id="userEmail">Carregando...</span>
+        <div>
+            <button id="loginBtn" onclick="abrirLogin()">🔐 Entrar</button>
+            <button id="logoutBtn" class="logout-btn" style="display:none" onclick="fazerLogout()">🚪 Sair</button>
         </div>
-        <div class="result-stats" id="resultStats"></div>
     </div>
 
-    <div id="galleryContainer" class="gallery">
-        <div class="no-results">Carregando links...</div>
+    <div class="tabs">
+        <button class="tab-btn active" onclick="mudarAba('links')">🔗 Links</button>
+        <button class="tab-btn" onclick="mudarAba('pedidos')">📝 Pedidos</button>
+        <button class="tab-btn admin-only" id="adminTabBtn" style="display:none" onclick="mudarAba('admin')">⚙️ Admin</button>
+    </div>
+
+    <div id="tabLinks" class="tab-content">
+        <div class="toolbar">
+            <select id="sortSelect" class="sort-select" onchange="aplicarOrdenacao()">
+                <option value="nome">Ordenar por Nome</option>
+                <option value="cliques">Mais acessados</option>
+                <option value="data">Mais recentes</option>
+            </select>
+        </div>
+
+        <div class="search-section">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="Pesquisar links...">
+                <button class="clear-search" id="clearSearchBtn">✖</button>
+            </div>
+            <div class="result-stats" id="resultStats"></div>
+        </div>
+
+        <div id="galleryContainer" class="gallery">
+            <div class="no-results">Carregando links...</div>
+        </div>
+    </div>
+
+    <div id="tabPedidos" class="tab-content" style="display:none">
+        <div style="text-align: center; margin-bottom: 20px;">
+            <button onclick="abrirPedidoModal()" class="tool-btn">📝 + Fazer novo pedido</button>
+        </div>
+        <div id="pedidosContainer" class="gallery">
+            <div class="no-results">Carregando pedidos...</div>
+        </div>
+    </div>
+
+    <div id="tabAdmin" class="tab-content" style="display:none">
+        <div id="adminPanel"></div>
     </div>
 
     <div class="footer">
-        LinKey Turbo - Última atualização: <span id="ultimaAtualizacao"></span>
+        LinKey - Última atualização: <span id="ultimaAtualizacao"></span>
     </div>
 </div>
 
 <button class="theme-btn" onclick="alternarTema()">🌓 Tema</button>
-<button class="admin-btn" onclick="abrirAdmin()">🔧 Admin</button>
 
-<div id="adminModal" class="modal">
+<!-- Modais -->
+<div id="loginModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h2>Painel Administrativo</h2>
-            <span class="close" onclick="fecharAdmin()">&times;</span>
+            <h2>🔐 Entrar ou Criar Conta</h2>
+            <span class="close" onclick="fecharModal('loginModal')">&times;</span>
         </div>
-        <div id="adminContent"></div>
+        <div id="loginContent">
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="email" id="loginEmail" placeholder="seu@email.com">
+            </div>
+            <div class="form-group">
+                <label>Senha:</label>
+                <input type="password" id="loginSenha" placeholder="mínimo 6 caracteres">
+            </div>
+            <button onclick="fazerLogin()">Entrar</button>
+            <button onclick="criarConta()" style="background: #10b981">Criar Conta</button>
+        </div>
+    </div>
+</div>
+
+<div id="pedidoModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>📝 Sugerir novo link</h2>
+            <span class="close" onclick="fecharModal('pedidoModal')">&times;</span>
+        </div>
+        <div class="form-group">
+            <label>Nome do link:</label>
+            <input type="text" id="pedidoNome" placeholder="Ex: Site Incrível">
+        </div>
+        <div class="form-group">
+            <label>URL:</label>
+            <input type="text" id="pedidoUrl" placeholder="https://...">
+        </div>
+        <div class="form-group">
+            <label>Por que esse link é útil? (opcional):</label>
+            <textarea id="pedidoMotivo" rows="3" placeholder="Explique..."></textarea>
+        </div>
+        <button onclick="enviarPedido()">📤 Enviar pedido</button>
     </div>
 </div>
 
 <div id="confirmModal" class="modal" style="z-index: 3000;">
     <div class="modal-content" style="max-width: 400px; text-align: center;">
-        <h3 id="confirmMsg">Tem certeza que deseja excluir?</h3>
+        <h3 id="confirmMsg">Tem certeza?</h3>
         <div style="margin-top: 20px;">
-            <button id="confirmYes" style="background: #dc2626;">Excluir</button>
+            <button id="confirmYes" style="background: #dc2626;">Confirmar</button>
             <button id="confirmNo" style="background: #6b7280;">Cancelar</button>
         </div>
     </div>
@@ -499,6 +611,7 @@
 
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 
 <script>
     const firebaseConfig = {
@@ -513,18 +626,180 @@
     
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
+    const auth = firebase.auth();
     
     let todosLinks = [];
-    let adminLogado = false;
+    let usuarioAtual = null;
+    let abaAtual = "links";
     let ordenacaoAtual = "nome";
-    let pendingDeleteId = null;
-    const SENHA_ADMIN = "linkey123";
+    let pendingAction = null;
     
-    function atualizarDataRodape() {
-        const agora = new Date();
-        document.getElementById("ultimaAtualizacao").innerHTML = agora.toLocaleString('pt-BR');
+    const SENHA_ADMIN = "linkey123";
+    let adminLogado = false;
+    
+    // ========== AUTENTICAÇÃO ==========
+    auth.onAuthStateChanged(async (user) => {
+        if(user) {
+            usuarioAtual = user;
+            document.getElementById("userEmail").innerHTML = `👤 ${user.email} ${user.emailVerified ? '✅' : '⏳ Verificar email'}`;
+            document.getElementById("loginBtn").style.display = "none";
+            document.getElementById("logoutBtn").style.display = "inline-block";
+            
+            if(!user.emailVerified) {
+                alert("⚠️ Verifique seu email! Enviamos um link de confirmação.");
+                await user.sendEmailVerification();
+            }
+            
+            // Verificar se é admin (email específico ou senha)
+            const isAdmin = user.email === "admin@linkey.com" || localStorage.getItem("adminTemp") === "true";
+            if(isAdmin) {
+                adminLogado = true;
+                document.getElementById("adminTabBtn").style.display = "inline-block";
+            }
+        } else {
+            usuarioAtual = null;
+            adminLogado = false;
+            document.getElementById("userEmail").innerHTML = "👤 Desconectado";
+            document.getElementById("loginBtn").style.display = "inline-block";
+            document.getElementById("logoutBtn").style.display = "none";
+            document.getElementById("adminTabBtn").style.display = "none";
+            if(abaAtual === "admin") mudarAba("links");
+        }
+        await carregarLinks();
+        await carregarPedidos();
+    });
+    
+    function abrirLogin() {
+        document.getElementById("loginModal").style.display = "block";
     }
     
+    async function fazerLogin() {
+        const email = document.getElementById("loginEmail").value;
+        const senha = document.getElementById("loginSenha").value;
+        try {
+            await auth.signInWithEmailAndPassword(email, senha);
+            fecharModal("loginModal");
+            alert("✅ Login realizado!");
+        } catch(erro) {
+            alert("❌ Erro: " + erro.message);
+        }
+    }
+    
+    async function criarConta() {
+        const email = document.getElementById("loginEmail").value;
+        const senha = document.getElementById("loginSenha").value;
+        try {
+            const userCred = await auth.createUserWithEmailAndPassword(email, senha);
+            await userCred.user.sendEmailVerification();
+            alert("✅ Conta criada! Verifique seu email para ativar.");
+        } catch(erro) {
+            alert("❌ Erro: " + erro.message);
+        }
+    }
+    
+    async function fazerLogout() {
+        await auth.signOut();
+        alert("✅ Deslogado!");
+    }
+    
+    // ========== PEDIDOS ==========
+    async function carregarPedidos() {
+        try {
+            const snapshot = await db.collection("pedidos").orderBy("data", "desc").get();
+            const container = document.getElementById("pedidosContainer");
+            if(snapshot.empty) {
+                container.innerHTML = '<div class="no-results">📭 Nenhum pedido ainda. Seja o primeiro!</div>';
+                return;
+            }
+            
+            let html = "";
+            snapshot.forEach(doc => {
+                const p = doc.data();
+                const podeAprovar = adminLogado && p.status === "pendente";
+                html += `
+                    <div class="pedido-card">
+                        <strong>🔗 ${escapeHtml(p.nome)}</strong><br>
+                        <small>📎 ${escapeHtml(p.url)}</small>
+                        <div class="link-note" style="margin-top:8px">💬 ${escapeHtml(p.motivo || "Sem justificativa")}</div>
+                        <div class="pedido-status status-${p.status}">${p.status === "pendente" ? "⏳ Pendente" : p.status === "aprovado" ? "✅ Aprovado" : "❌ Recusado"}</div>
+                        <small style="color:#6a7c9f">👤 ${escapeHtml(p.email)} | ${new Date(p.data).toLocaleDateString()}</small>
+                        ${podeAprovar ? `
+                            <div class="admin-actions">
+                                <button onclick="aprovarPedido('${doc.id}', '${escapeHtml(p.nome)}', '${escapeHtml(p.url)}')" style="background:#10b981">✅ Aprovar</button>
+                                <button onclick="recusarPedido('${doc.id}')" style="background:#ef4444">❌ Recusar</button>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        } catch(e) {
+            console.error(e);
+        }
+    }
+    
+    async function abrirPedidoModal() {
+        if(!usuarioAtual) {
+            alert("⚠️ Você precisa estar logado para fazer um pedido!");
+            abrirLogin();
+            return;
+        }
+        document.getElementById("pedidoModal").style.display = "block";
+    }
+    
+    async function enviarPedido() {
+        const nome = document.getElementById("pedidoNome").value.trim();
+        const url = document.getElementById("pedidoUrl").value.trim();
+        const motivo = document.getElementById("pedidoMotivo").value.trim();
+        
+        if(!nome || !url) {
+            alert("❌ Nome e URL são obrigatórios!");
+            return;
+        }
+        
+        await db.collection("pedidos").add({
+            nome: nome,
+            url: url,
+            motivo: motivo,
+            email: usuarioAtual.email,
+            status: "pendente",
+            data: new Date().toISOString()
+        });
+        
+        alert("✅ Pedido enviado! Aguarde aprovação do admin.");
+        fecharModal("pedidoModal");
+        document.getElementById("pedidoNome").value = "";
+        document.getElementById("pedidoUrl").value = "";
+        document.getElementById("pedidoMotivo").value = "";
+        await carregarPedidos();
+    }
+    
+    async function aprovarPedido(id, nome, url) {
+        // Adicionar aos links
+        await db.collection("links").add({
+            nome: nome,
+            url: url,
+            imagem: "https://via.placeholder.com/200x150?text=Link",
+            cliques: 0,
+            nota: "Aprovado por pedido da comunidade",
+            dataCriacao: new Date().toISOString()
+        });
+        
+        // Atualizar status do pedido
+        await db.collection("pedidos").doc(id).update({ status: "aprovado" });
+        
+        alert("✅ Pedido aprovado e adicionado aos links!");
+        await carregarLinks();
+        await carregarPedidos();
+    }
+    
+    async function recusarPedido(id) {
+        await db.collection("pedidos").doc(id).update({ status: "recusado" });
+        alert("❌ Pedido recusado.");
+        await carregarPedidos();
+    }
+    
+    // ========== LINKS COM NOTAS ==========
     async function carregarLinks() {
         try {
             const snapshot = await db.collection("links").orderBy("nome").get();
@@ -534,6 +809,7 @@
                     id: doc.id,
                     ...doc.data(),
                     cliques: doc.data().cliques || 0,
+                    nota: doc.data().nota || "",
                     dataCriacao: doc.data().dataCriacao || new Date().toISOString()
                 });
             });
@@ -551,10 +827,9 @@
     
     async function criarLinksExemplo() {
         const exemplos = [
-            { nome: "GitHub", url: "https://github.com", imagem: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" },
-            { nome: "Google", url: "https://google.com", imagem: "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" },
-            { nome: "Wikipedia", url: "https://wikipedia.org", imagem: "https://upload.wikimedia.org/wikipedia/commons/6/63/Wikipedia-logo.png" },
-            { nome: "YouTube", url: "https://youtube.com", imagem: "https://www.youtube.com/img/desktop/yt_1200.png" }
+            { nome: "GitHub", url: "https://github.com", imagem: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png", nota: "Repositórios e código aberto" },
+            { nome: "Google", url: "https://google.com", imagem: "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png", nota: "O melhor buscador" },
+            { nome: "Wikipedia", url: "https://wikipedia.org", imagem: "https://upload.wikimedia.org/wikipedia/commons/6/63/Wikipedia-logo.png", nota: "Enciclopédia livre" }
         ];
         
         for(let item of exemplos) {
@@ -621,6 +896,7 @@
                     </div>
                     <div class="card-content">
                         <div class="link-name">${escapeHtml(link.nome)}</div>
+                        ${link.nota ? `<div class="link-note">📝 ${escapeHtml(link.nota)}</div>` : ''}
                         <div class="link-cliques">👁️ ${link.cliques || 0} cliques</div>
                         <div class="card-buttons">
                             <button class="download-btn" onclick="window.open('${link.url}', '_blank'); contarClique('${link.id}')">⬇️ Acessar</button>
@@ -636,93 +912,57 @@
     
     function compartilharLink(url, nome) {
         if(navigator.share) {
-            navigator.share({
-                title: nome,
-                url: url
-            });
+            navigator.share({ title: nome, url: url });
         } else {
             navigator.clipboard.writeText(url);
             alert(`🔗 Link "${nome}" copiado!`);
         }
     }
     
-    function escapeHtml(str) {
-        if(!str) return "";
-        return str.replace(/[&<>]/g, function(m) {
-            if(m === "&") return "&amp;";
-            if(m === "<") return "&lt;";
-            if(m === ">") return "&gt;";
-            return m;
-        });
-    }
-    
-    function confirmarExclusao(id) {
-        pendingDeleteId = id;
-        document.getElementById("confirmModal").style.display = "block";
-    }
-    
-    document.getElementById("confirmYes").onclick = async function() {
-        if(pendingDeleteId) {
-            await db.collection("links").doc(pendingDeleteId).delete();
-            await carregarLinks();
-            if(adminLogado) await listarLinksAdmin();
-            pendingDeleteId = null;
-        }
-        document.getElementById("confirmModal").style.display = "none";
-    };
-    
-    document.getElementById("confirmNo").onclick = function() {
-        pendingDeleteId = null;
-        document.getElementById("confirmModal").style.display = "none";
-    };
-    
-    function abrirAdmin() {
-        document.getElementById("adminModal").style.display = "block";
+    // ========== ADMIN ==========
+    async function mostrarAdminPanel() {
+        const container = document.getElementById("adminPanel");
         if(!adminLogado) {
-            document.getElementById("adminContent").innerHTML = `
+            container.innerHTML = `
                 <div style="text-align:center;padding:20px">
-                    <h3>🔐 Login Administrativo</h3>
-                    <input type="password" id="adminSenha" placeholder="Digite a senha" onkeypress="if(event.key==='Enter') fazerLogin()" style="width:100%;margin:10px 0;padding:10px">
-                    <button onclick="fazerLogin()">Entrar</button>
+                    <h3>🔐 Acesso Admin</h3>
+                    <input type="password" id="adminSenha" placeholder="Senha master" style="padding:10px;margin:10px">
+                    <button onclick="validarAdmin()">Entrar</button>
                 </div>
             `;
-        } else {
-            mostrarPainelAdmin();
+            return;
         }
-    }
-    
-    function fecharAdmin() {
-        document.getElementById("adminModal").style.display = "none";
-    }
-    
-    function fazerLogin() {
-        const senha = document.getElementById("adminSenha").value;
-        if(senha === SENHA_ADMIN) {
-            adminLogado = true;
-            mostrarPainelAdmin();
-        } else {
-            alert("❌ Senha incorreta!");
-        }
-    }
-    
-    async function mostrarPainelAdmin() {
-        const content = document.getElementById("adminContent");
-        content.innerHTML = `
+        
+        container.innerHTML = `
             <div class="form-group">
-                <h3>➕ Adicionar novo link</h3>
-                <label>Nome do link:</label>
-                <input type="text" id="novoNome" placeholder="Ex: Meu Site">
-                <label>URL de destino:</label>
-                <input type="text" id="novaUrl" placeholder="https://...">
-                <label>URL da imagem (opcional):</label>
-                <input type="text" id="novaImagem" placeholder="https://...">
-                <button onclick="adicionarLink()">➕ Adicionar</button>
+                <h3>➕ Adicionar link (com nota)</h3>
+                <label>Nome:</label>
+                <input type="text" id="novoNome">
+                <label>URL:</label>
+                <input type="text" id="novaUrl">
+                <label>Imagem URL:</label>
+                <input type="text" id="novaImagem">
+                <label>Nota/Descrição:</label>
+                <textarea id="novaNota" rows="2" placeholder="Uma breve descrição..."></textarea>
+                <button onclick="adicionarLinkAdmin()">➕ Adicionar</button>
             </div>
             <hr>
-            <h3>📋 Links existentes (${todosLinks.length})</h3>
+            <h3>📋 Links (${todosLinks.length})</h3>
             <div id="listaLinksAdmin" class="link-list"></div>
         `;
         await listarLinksAdmin();
+    }
+    
+    function validarAdmin() {
+        const senha = document.getElementById("adminSenha").value;
+        if(senha === SENHA_ADMIN) {
+            adminLogado = true;
+            localStorage.setItem("adminTemp", "true");
+            document.getElementById("adminTabBtn").style.display = "inline-block";
+            mostrarAdminPanel();
+        } else {
+            alert("Senha incorreta!");
+        }
     }
     
     async function listarLinksAdmin() {
@@ -734,59 +974,119 @@
                 <div class="link-item">
                     <div style="flex:1">
                         <strong>${escapeHtml(link.nome)}</strong><br>
-                        <small>${link.cliques || 0} cliques</small>
+                        <small>${link.cliques || 0} cliques | ${link.nota ? link.nota.substring(0,40) : "sem nota"}</small>
                     </div>
                     <div>
-                        <button onclick="editarLink('${link.id}')">✏️ Editar</button>
-                        <button onclick="confirmarExclusao('${link.id}')" style="background:#dc2626">🗑️ Excluir</button>
+                        <button onclick="editarLinkAdmin('${link.id}')">✏️ Editar</button>
+                        <button onclick="confirmarExclusao('${link.id}')" style="background:#dc2626">🗑️</button>
                     </div>
                 </div>
             `;
         }
-        listaDiv.innerHTML = html || "<p>Nenhum link cadastrado.</p>";
+        listaDiv.innerHTML = html || "<p>Nenhum link.</p>";
     }
     
-    async function adicionarLink() {
+    async function adicionarLinkAdmin() {
         const nome = document.getElementById("novoNome").value.trim();
         const url = document.getElementById("novaUrl").value.trim();
         let imagem = document.getElementById("novaImagem").value.trim();
+        const nota = document.getElementById("novaNota").value.trim();
         
         if(!nome || !url) {
-            alert("❌ Nome e URL são obrigatórios!");
+            alert("Nome e URL são obrigatórios!");
             return;
         }
         
-        if(!imagem) imagem = "https://via.placeholder.com/200x150?text=Sem+Imagem";
+        if(!imagem) imagem = "https://via.placeholder.com/200x150?text=Link";
         
         await db.collection("links").add({
-            nome, url, imagem,
+            nome, url, imagem, nota,
             cliques: 0,
             dataCriacao: new Date().toISOString()
         });
         
-        alert("✅ Link adicionado com sucesso!");
+        alert("Link adicionado!");
         document.getElementById("novoNome").value = "";
         document.getElementById("novaUrl").value = "";
         document.getElementById("novaImagem").value = "";
+        document.getElementById("novaNota").value = "";
         await carregarLinks();
         await listarLinksAdmin();
     }
     
-    async function editarLink(id) {
+    async function editarLinkAdmin(id) {
         const link = todosLinks.find(l => l.id === id);
-        const novoNome = prompt("✏️ Editar nome:", link.nome);
+        const novoNome = prompt("Novo nome:", link.nome);
         if(!novoNome) return;
-        const novaUrl = prompt("✏️ Editar URL:", link.url);
+        const novaUrl = prompt("Nova URL:", link.url);
         if(!novaUrl) return;
+        const novaNota = prompt("Nova nota/descrição:", link.nota || "");
         
         await db.collection("links").doc(id).update({
             nome: novoNome,
-            url: novaUrl
+            url: novaUrl,
+            nota: novaNota || ""
         });
         
-        alert("✅ Link atualizado!");
+        alert("Link atualizado!");
         await carregarLinks();
         await listarLinksAdmin();
+    }
+    
+    async function confirmarExclusao(id) {
+        pendingAction = id;
+        document.getElementById("confirmModal").style.display = "block";
+    }
+    
+    document.getElementById("confirmYes").onclick = async function() {
+        if(pendingAction) {
+            await db.collection("links").doc(pendingAction).delete();
+            await carregarLinks();
+            if(adminLogado) await listarLinksAdmin();
+            pendingAction = null;
+        }
+        document.getElementById("confirmModal").style.display = "none";
+    };
+    
+    document.getElementById("confirmNo").onclick = function() {
+        pendingAction = null;
+        document.getElementById("confirmModal").style.display = "none";
+    };
+    
+    // ========== UTILITÁRIOS ==========
+    function atualizarDataRodape() {
+        document.getElementById("ultimaAtualizacao").innerHTML = new Date().toLocaleString('pt-BR');
+    }
+    
+    function escapeHtml(str) {
+        if(!str) return "";
+        return str.replace(/[&<>]/g, function(m) {
+            return m === "&" ? "&amp;" : m === "<" ? "&lt;" : "&gt;";
+        });
+    }
+    
+    function mudarAba(aba) {
+        abaAtual = aba;
+        document.querySelectorAll(".tab-content").forEach(tab => tab.style.display = "none");
+        document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+        
+        if(aba === "links") {
+            document.getElementById("tabLinks").style.display = "block";
+            document.querySelector(".tabs button:first-child").classList.add("active");
+            aplicarOrdenacao();
+        } else if(aba === "pedidos") {
+            document.getElementById("tabPedidos").style.display = "block";
+            document.querySelectorAll(".tabs button")[1].classList.add("active");
+            carregarPedidos();
+        } else if(aba === "admin") {
+            document.getElementById("tabAdmin").style.display = "block";
+            document.querySelectorAll(".tabs button")[2].classList.add("active");
+            mostrarAdminPanel();
+        }
+    }
+    
+    function fecharModal(id) {
+        document.getElementById(id).style.display = "none";
     }
     
     function alternarTema() {
@@ -802,9 +1102,6 @@
         }
     }
     
-    const temaSalvo = localStorage.getItem('tema');
-    if(temaSalvo === 'light') document.body.classList.add('light');
-    
     document.getElementById("searchInput").addEventListener("input", function(e) {
         aplicarOrdenacao();
         document.getElementById("clearSearchBtn").style.display = e.target.value ? "inline-block" : "none";
@@ -819,7 +1116,8 @@
     document.addEventListener('keydown', function(e) {
         if(e.ctrlKey && e.key === 'k') {
             e.preventDefault();
-            abrirAdmin();
+            if(!usuarioAtual) abrirLogin();
+            else if(adminLogado) mudarAba("admin");
         }
         if(e.key === '/') {
             e.preventDefault();
@@ -827,7 +1125,10 @@
         }
     });
     
-    carregarLinks();
+    const temaSalvo = localStorage.getItem('tema');
+    if(temaSalvo === 'light') document.body.classList.add('light');
+    
+    atualizarDataRodape();
 </script>
 </body>
 </html>
