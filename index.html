@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LinKey - Comunitário</title>
+    <title>LinKey - Galeria Comunitária</title>
     <style>
         * {
             margin: 0;
@@ -12,383 +12,452 @@
         }
 
         body {
-            font-family: Arial, Helvetica, sans-serif;
-            padding: 20px;
-            transition: all 0.3s ease;
+            font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+            padding: 24px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             min-height: 100vh;
+            line-height: 1.5;
         }
 
+        /* === TEMA ESCURO (padrão) === */
         body.dark {
-            background: #0a0f1e;
+            background: linear-gradient(135deg, #0a0f1e 0%, #0c1222 100%);
             color: #eef2ff;
         }
 
+        body.dark .card {
+            background: rgba(18, 25, 45, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(59, 130, 246, 0.15);
+        }
+
+        body.dark .card:hover {
+            background: rgba(25, 35, 60, 0.85);
+            border-color: rgba(59, 130, 246, 0.4);
+        }
+
+        body.dark .search-box {
+            background: rgba(17, 24, 39, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        body.dark .user-info {
+            background: rgba(18, 25, 45, 0.6);
+            backdrop-filter: blur(8px);
+        }
+
+        /* === TEMA CLARO === */
         body.light {
-            background: #f0f2f5;
-            color: #1a1a2e;
+            background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+            color: #1e293b;
         }
 
         body.light .card {
-            background: #ffffff;
-            border-color: #d1d5db;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
 
         body.light .card:hover {
-            background: #f9fafb;
-        }
-
-        body.light .link-name {
-            color: #1f2937;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            transform: translateY(-4px);
         }
 
         body.light .search-box {
-            background: #ffffff;
-            border-color: #d1d5db;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(0, 0, 0, 0.08);
         }
 
-        body.light #searchInput {
-            color: #1f2937;
+        body.light .user-info {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(8px);
         }
 
-        body.light .result-stats {
-            color: #6b7280;
+        body.light .link-note {
+            background: #f1f5f9;
+            color: #475569;
         }
 
-        body.light .footer {
-            color: #9ca3af;
+        body.light .tab-btn {
+            background: rgba(255, 255, 255, 0.6);
+            color: #1e293b;
         }
 
-        body.light .modal-content {
-            background: #ffffff;
-            border-color: #d1d5db;
+        body.light .tab-btn.active {
+            background: #3b82f6;
+            color: white;
         }
 
-        body.light .form-group input, body.light .form-group textarea {
-            background: #f9fafb;
-            border-color: #d1d5db;
-            color: #1f2937;
-        }
-
-        body.light .link-item {
-            background: #f9fafb;
-            border-color: #e5e7eb;
-        }
-
-        body.light .tool-btn, body.light .tab-btn {
-            background: #e5e7eb;
-            color: #1f2937;
-        }
-
+        /* === CONTAINER === */
         .container {
             max-width: 1400px;
             margin: 0 auto;
         }
 
+        /* === CABEÇALHO === */
         .header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 32px;
         }
 
         .logo {
-            font-size: 48px;
-            font-weight: bold;
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            font-size: 56px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #3b82f6, #a855f7, #3b82f6);
+            background-size: 200% auto;
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
+            animation: shimmer 3s ease infinite;
+            letter-spacing: -1px;
         }
 
+        @keyframes shimmer {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .sub {
+            font-size: 14px;
+            opacity: 0.7;
+            margin-top: 8px;
+            font-weight: 400;
+        }
+
+        /* === USER INFO === */
         .user-info {
-            text-align: right;
-            margin-bottom: 15px;
-            padding: 10px;
-            background: #0f1420;
-            border-radius: 15px;
+            border-radius: 60px;
+            padding: 12px 24px;
+            margin-bottom: 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-        }
-
-        body.light .user-info {
-            background: #e5e7eb;
+            gap: 12px;
         }
 
         .user-email {
             font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .login-btn, .logout-btn {
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .login-btn {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .login-btn:hover {
+            background: #2563eb;
+            transform: scale(1.02);
         }
 
         .logout-btn {
-            background: #dc2626;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 12px;
+            background: #ef4444;
+            color: white;
         }
 
-        /* Abas */
+        .logout-btn:hover {
+            background: #dc2626;
+        }
+
+        /* === ABAS === */
         .tabs {
             display: flex;
             justify-content: center;
-            gap: 10px;
-            margin-bottom: 25px;
+            gap: 12px;
+            margin-bottom: 32px;
             flex-wrap: wrap;
         }
 
         .tab-btn {
-            background: #1f2a44;
-            border: none;
-            color: white;
-            padding: 10px 24px;
-            border-radius: 30px;
-            cursor: pointer;
+            padding: 10px 28px;
+            border-radius: 50px;
             font-size: 14px;
-            transition: all 0.2s;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            background: rgba(31, 41, 55, 0.5);
+            color: #e2e8f0;
+        }
+
+        body.dark .tab-btn {
+            background: rgba(31, 41, 55, 0.6);
+            color: #cbd5e1;
         }
 
         .tab-btn.active {
             background: #3b82f6;
+            color: white;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
         }
 
-        .tab-btn:hover {
-            background: #3b82f6;
+        .tab-btn:hover:not(.active) {
+            background: rgba(59, 130, 246, 0.6);
+            transform: translateY(-2px);
         }
 
+        /* === TOOLBAR === */
         .toolbar {
             display: flex;
-            flex-wrap: wrap;
             justify-content: center;
-            gap: 12px;
-            margin-bottom: 25px;
-        }
-
-        .tool-btn {
-            background: #1f2a44;
-            border: none;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 13px;
+            margin-bottom: 28px;
         }
 
         .sort-select {
-            background: #111827;
-            border: 1px solid #2e4a7c;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 25px;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: 500;
             cursor: pointer;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            background: rgba(17, 24, 39, 0.6);
+            color: inherit;
+            backdrop-filter: blur(4px);
         }
 
         body.light .sort-select {
             background: white;
-            border-color: #d1d5db;
-            color: #1f2937;
+            border-color: #cbd5e1;
         }
 
+        /* === PESQUISA === */
         .search-section {
             max-width: 500px;
-            margin: 0 auto 25px auto;
+            margin: 0 auto 28px auto;
         }
 
         .search-box {
-            background: #111827;
-            border: 1px solid #1e2a44;
-            border-radius: 50px;
-            padding: 8px 15px;
+            border-radius: 60px;
+            padding: 6px 20px;
             display: flex;
             align-items: center;
+            transition: all 0.2s;
+        }
+
+        .search-box:focus-within {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
         }
 
         .search-icon {
-            color: #3b6cb0;
-            margin-right: 8px;
+            font-size: 18px;
+            margin-right: 12px;
+            opacity: 0.6;
         }
 
         #searchInput {
             flex: 1;
             background: transparent;
             border: none;
-            padding: 10px 0;
-            font-size: 16px;
+            padding: 12px 0;
+            font-size: 15px;
             outline: none;
-            color: white;
-        }
-
-        body.light #searchInput {
-            color: #1f2937;
+            color: inherit;
         }
 
         .clear-search {
-            background: #1e2a44;
+            background: rgba(100, 116, 139, 0.3);
             border: none;
-            color: white;
+            color: inherit;
             cursor: pointer;
-            padding: 4px 10px;
+            padding: 4px 12px;
             border-radius: 30px;
+            font-size: 14px;
             display: none;
+            transition: all 0.2s;
+        }
+
+        .clear-search:hover {
+            background: rgba(100, 116, 139, 0.6);
         }
 
         .result-stats {
             text-align: center;
-            font-size: 13px;
+            font-size: 12px;
             margin-top: 10px;
+            opacity: 0.7;
         }
 
+        /* === GALERIA === */
         .gallery {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 20px;
+            gap: 24px;
         }
 
+        /* === CARDS === */
         .card {
             width: 300px;
-            background: #0f1420;
-            border-radius: 20px;
-            border: 1px solid #1f2a44;
+            border-radius: 24px;
             overflow: hidden;
-            transition: all 0.2s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
         }
 
         .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            transform: translateY(-6px);
         }
 
         .hot-badge {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #ef4444;
+            top: 12px;
+            right: 12px;
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
             color: white;
-            padding: 4px 8px;
-            border-radius: 20px;
+            padding: 4px 10px;
+            border-radius: 30px;
             font-size: 11px;
-            font-weight: bold;
+            font-weight: 700;
+            z-index: 10;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
 
         .card-img {
             width: 100%;
             height: 160px;
-            background: #080c14;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            background: rgba(0, 0, 0, 0.2);
         }
 
         .card-img img {
-            max-width: 100%;
-            max-height: 100%;
+            width: 100%;
+            height: 100%;
             object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .card:hover .card-img img {
+            transform: scale(1.05);
         }
 
         .fallback-icon {
             font-size: 48px;
-            color: #3b6cb0;
+            opacity: 0.5;
         }
 
         .card-content {
-            padding: 12px;
+            padding: 16px;
         }
 
         .link-name {
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 6px;
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            line-height: 1.3;
         }
 
         .link-note {
             font-size: 12px;
-            color: #8a9bcf;
-            margin-bottom: 8px;
-            padding: 6px;
-            background: #080c14;
-            border-radius: 8px;
-        }
-
-        body.light .link-note {
-            background: #f3f4f6;
-            color: #4b5563;
+            padding: 8px 10px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            line-height: 1.4;
         }
 
         .link-cliques {
             font-size: 11px;
-            color: #6a7c9f;
-            margin-bottom: 10px;
+            opacity: 0.6;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
 
         .card-buttons {
             display: flex;
-            gap: 8px;
+            gap: 10px;
+        }
+
+        .download-btn, .share-btn {
+            padding: 10px 0;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            text-align: center;
         }
 
         .download-btn {
             flex: 2;
-            background: #0f2b4f;
-            border: 1px solid #2a4870;
-            color: #c7e2ff;
-            text-align: center;
-            padding: 8px 0;
-            border-radius: 40px;
-            font-size: 13px;
-            font-weight: bold;
-            cursor: pointer;
+            background: linear-gradient(95deg, #1e40af, #3b82f6);
+            color: white;
+        }
+
+        .download-btn:hover {
+            background: linear-gradient(95deg, #1e3a8a, #2563eb);
+            transform: scale(0.98);
         }
 
         .share-btn {
             flex: 1;
-            background: #1e2a44;
-            border: 1px solid #2a4870;
-            color: #c7e2ff;
-            text-align: center;
-            padding: 8px 0;
-            border-radius: 40px;
-            font-size: 13px;
-            cursor: pointer;
+            background: rgba(100, 116, 139, 0.3);
+            color: inherit;
         }
 
-        .download-btn:hover, .share-btn:hover {
-            background: #3b82f6;
-            color: white;
+        .share-btn:hover {
+            background: rgba(100, 116, 139, 0.5);
         }
 
-        /* Pedidos */
+        /* === PEDIDOS === */
         .pedido-card {
-            background: #0f1420;
-            border-radius: 16px;
-            padding: 15px;
-            margin-bottom: 15px;
-            border: 1px solid #2e4a7c;
+            background: rgba(18, 25, 45, 0.6);
+            backdrop-filter: blur(8px);
+            border-radius: 20px;
+            padding: 18px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(59, 130, 246, 0.15);
+            transition: all 0.2s;
+        }
+
+        .pedido-card:hover {
+            background: rgba(25, 35, 60, 0.7);
+            transform: translateX(4px);
+        }
+
+        body.light .pedido-card {
+            background: white;
+            border-color: #e2e8f0;
         }
 
         .pedido-status {
             display: inline-block;
-            padding: 3px 10px;
-            border-radius: 20px;
+            padding: 4px 12px;
+            border-radius: 30px;
             font-size: 11px;
-            margin-top: 8px;
+            font-weight: 600;
+            margin-top: 10px;
         }
 
         .status-pendente { background: #f59e0b; color: #1a1a2e; }
         .status-aprovado { background: #10b981; color: white; }
         .status-recusado { background: #ef4444; color: white; }
 
-        .admin-actions {
-            margin-top: 10px;
-            display: flex;
-            gap: 8px;
-        }
-
-        .no-results {
-            text-align: center;
-            padding: 40px;
-            background: #0c1120;
-            border-radius: 30px;
-        }
-
+        /* === MODAIS === */
         .modal {
             display: none;
             position: fixed;
@@ -396,112 +465,225 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.9);
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(4px);
             z-index: 2000;
-            overflow-y: auto;
+            align-items: center;
+            justify-content: center;
         }
 
         .modal-content {
-            background: #0f1420;
-            margin: 50px auto;
-            padding: 25px;
-            width: 90%;
+            margin: 20px;
+            padding: 28px;
             max-width: 500px;
-            border-radius: 20px;
+            border-radius: 28px;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        body.dark .modal-content {
+            background: #0f1420;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        body.light .modal-content {
+            background: white;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
         }
 
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
+        }
+
+        .modal-header h2 {
+            font-size: 24px;
+            font-weight: 700;
         }
 
         .close {
             cursor: pointer;
             font-size: 28px;
+            transition: all 0.2s;
+            opacity: 0.6;
+        }
+
+        .close:hover {
+            opacity: 1;
+            transform: rotate(90deg);
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 18px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
+            margin-bottom: 6px;
+            font-size: 13px;
+            font-weight: 600;
         }
 
         .form-group input, .form-group textarea, .form-group select {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
+            border-radius: 14px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        body.dark .form-group input,
+        body.dark .form-group textarea,
+        body.dark .form-group select {
             background: #080c14;
             border: 1px solid #1e2a44;
-            border-radius: 8px;
-            font-size: 14px;
             color: white;
         }
 
-        body.light .form-group input, 
-        body.light .form-group textarea {
-            background: #f9fafb;
-            color: #1f2937;
+        body.light .form-group input,
+        body.light .form-group textarea,
+        body.light .form-group select {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            color: #1e293b;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
         }
 
         button {
             background: #3b82f6;
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
+            padding: 12px 24px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 600;
             cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .link-list {
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .link-item {
+            padding: 14px;
+            margin-bottom: 10px;
+            border-radius: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        body.dark .link-item {
+            background: #080c14;
+        }
+
+        body.light .link-item {
+            background: #f8fafc;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 48px;
+            border-radius: 32px;
+            opacity: 0.7;
         }
 
         .footer {
             text-align: center;
-            margin-top: 40px;
+            margin-top: 48px;
+            padding: 20px;
             font-size: 11px;
-            padding: 15px;
+            opacity: 0.5;
         }
 
-        .theme-btn, .admin-btn {
+        /* === BOTÕES FLUTUANTES === */
+        .theme-btn {
             position: fixed;
-            bottom: 20px;
-            padding: 12px 16px;
-            border-radius: 50px;
+            bottom: 24px;
+            left: 24px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(31, 41, 55, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.1);
+            font-size: 22px;
             cursor: pointer;
             z-index: 1000;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .theme-btn {
-            left: 20px;
-            background: #1f2a44;
-            color: white;
-        }
-
-        .admin-btn {
-            right: 20px;
+        .theme-btn:hover {
+            transform: scale(1.1);
             background: #3b82f6;
-            color: white;
         }
 
-        @media (max-width: 650px) {
-            .card { width: 95%; }
-            .user-info { flex-direction: column; gap: 10px; text-align: center; }
+        /* === RESPONSIVO === */
+        @media (max-width: 680px) {
+            body {
+                padding: 16px;
+            }
+            .logo {
+                font-size: 40px;
+            }
+            .card {
+                width: 100%;
+                max-width: 350px;
+            }
+            .user-info {
+                flex-direction: column;
+                text-align: center;
+                border-radius: 24px;
+            }
+            .tabs {
+                gap: 8px;
+            }
+            .tab-btn {
+                padding: 8px 20px;
+                font-size: 13px;
+            }
         }
     </style>
 </head>
 <body class="dark">
 <div class="container">
     <div class="header">
-        <div class="logo">LinKey Comunitário</div>
-        <div class="sub">Peça links, adicione notas e faça parte</div>
+        <div class="logo">LinKey</div>
+        <div class="sub">Galeria comunitária · compartilhe, peça, conecte-se</div>
     </div>
 
     <div class="user-info" id="userInfo">
-        <span class="user-email" id="userEmail">Carregando...</span>
+        <span class="user-email" id="userEmail">✨ Carregando...</span>
         <div>
-            <button id="loginBtn" onclick="abrirLogin()">🔐 Entrar</button>
+            <button id="loginBtn" class="login-btn" onclick="abrirLogin()">🔐 Entrar</button>
             <button id="logoutBtn" class="logout-btn" style="display:none" onclick="fazerLogout()">🚪 Sair</button>
         </div>
     </div>
@@ -515,9 +697,9 @@
     <div id="tabLinks" class="tab-content">
         <div class="toolbar">
             <select id="sortSelect" class="sort-select" onchange="aplicarOrdenacao()">
-                <option value="nome">Ordenar por Nome</option>
-                <option value="cliques">Mais acessados</option>
-                <option value="data">Mais recentes</option>
+                <option value="nome">📌 Ordenar por Nome</option>
+                <option value="cliques">🔥 Mais acessados</option>
+                <option value="data">🕐 Mais recentes</option>
             </select>
         </div>
 
@@ -531,16 +713,16 @@
         </div>
 
         <div id="galleryContainer" class="gallery">
-            <div class="no-results">Carregando links...</div>
+            <div class="no-results">🎨 Carregando links...</div>
         </div>
     </div>
 
     <div id="tabPedidos" class="tab-content" style="display:none">
-        <div style="text-align: center; margin-bottom: 20px;">
-            <button onclick="abrirPedidoModal()" class="tool-btn">📝 + Fazer novo pedido</button>
+        <div style="text-align: center; margin-bottom: 24px;">
+            <button onclick="abrirPedidoModal()" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6);">📝 + Fazer novo pedido</button>
         </div>
         <div id="pedidosContainer" class="gallery">
-            <div class="no-results">Carregando pedidos...</div>
+            <div class="no-results">📭 Carregando pedidos...</div>
         </div>
     </div>
 
@@ -549,30 +731,30 @@
     </div>
 
     <div class="footer">
-        LinKey - Última atualização: <span id="ultimaAtualizacao"></span>
+        ✨ LinKey — comunidade de links colaborativa
     </div>
 </div>
 
-<button class="theme-btn" onclick="alternarTema()">🌓 Tema</button>
+<button class="theme-btn" onclick="alternarTema()">🌓</button>
 
-<!-- Modais -->
+<!-- MODAIS -->
 <div id="loginModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h2>🔐 Entrar ou Criar Conta</h2>
+            <h2>🔐 Entrar</h2>
             <span class="close" onclick="fecharModal('loginModal')">&times;</span>
         </div>
         <div id="loginContent">
             <div class="form-group">
-                <label>Email:</label>
+                <label>Email</label>
                 <input type="email" id="loginEmail" placeholder="seu@email.com">
             </div>
             <div class="form-group">
-                <label>Senha:</label>
+                <label>Senha</label>
                 <input type="password" id="loginSenha" placeholder="mínimo 6 caracteres">
             </div>
             <button onclick="fazerLogin()">Entrar</button>
-            <button onclick="criarConta()" style="background: #10b981">Criar Conta</button>
+            <button onclick="criarConta()" style="background: #10b981; margin-left: 8px;">Criar Conta</button>
         </div>
     </div>
 </div>
@@ -580,32 +762,30 @@
 <div id="pedidoModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h2>📝 Sugerir novo link</h2>
+            <h2>📝 Sugerir link</h2>
             <span class="close" onclick="fecharModal('pedidoModal')">&times;</span>
         </div>
         <div class="form-group">
-            <label>Nome do link:</label>
+            <label>Nome do link</label>
             <input type="text" id="pedidoNome" placeholder="Ex: Site Incrível">
         </div>
         <div class="form-group">
-            <label>URL:</label>
+            <label>URL</label>
             <input type="text" id="pedidoUrl" placeholder="https://...">
         </div>
         <div class="form-group">
-            <label>Por que esse link é útil? (opcional):</label>
+            <label>Por que esse link é útil?</label>
             <textarea id="pedidoMotivo" rows="3" placeholder="Explique..."></textarea>
         </div>
         <button onclick="enviarPedido()">📤 Enviar pedido</button>
     </div>
 </div>
 
-<div id="confirmModal" class="modal" style="z-index: 3000;">
-    <div class="modal-content" style="max-width: 400px; text-align: center;">
-        <h3 id="confirmMsg">Tem certeza?</h3>
-        <div style="margin-top: 20px;">
-            <button id="confirmYes" style="background: #dc2626;">Confirmar</button>
-            <button id="confirmNo" style="background: #6b7280;">Cancelar</button>
-        </div>
+<div id="confirmModal" class="modal">
+    <div class="modal-content" style="max-width: 380px; text-align: center;">
+        <h3 id="confirmMsg" style="margin-bottom: 20px;">Tem certeza?</h3>
+        <button id="confirmYes" style="background: #dc2626;">Excluir</button>
+        <button id="confirmNo" style="background: #6b7280; margin-left: 8px;">Cancelar</button>
     </div>
 </div>
 
@@ -641,16 +821,15 @@
     auth.onAuthStateChanged(async (user) => {
         if(user) {
             usuarioAtual = user;
-            document.getElementById("userEmail").innerHTML = `👤 ${user.email} ${user.emailVerified ? '✅' : '⏳ Verificar email'}`;
+            document.getElementById("userEmail").innerHTML = `👤 ${user.email} ${user.emailVerified ? '✅' : '⏳ Verifique seu email'}`;
             document.getElementById("loginBtn").style.display = "none";
             document.getElementById("logoutBtn").style.display = "inline-block";
             
             if(!user.emailVerified) {
-                alert("⚠️ Verifique seu email! Enviamos um link de confirmação.");
+                alert("📧 Verifique seu email! Enviamos um link de confirmação.");
                 await user.sendEmailVerification();
             }
             
-            // Verificar se é admin (email específico ou senha)
             const isAdmin = user.email === "admin@linkey.com" || localStorage.getItem("adminTemp") === "true";
             if(isAdmin) {
                 adminLogado = true;
@@ -670,7 +849,7 @@
     });
     
     function abrirLogin() {
-        document.getElementById("loginModal").style.display = "block";
+        document.getElementById("loginModal").style.display = "flex";
     }
     
     async function fazerLogin() {
@@ -679,9 +858,9 @@
         try {
             await auth.signInWithEmailAndPassword(email, senha);
             fecharModal("loginModal");
-            alert("✅ Login realizado!");
+            alert("✅ Bem-vindo de volta!");
         } catch(erro) {
-            alert("❌ Erro: " + erro.message);
+            alert("❌ " + erro.message);
         }
     }
     
@@ -693,13 +872,13 @@
             await userCred.user.sendEmailVerification();
             alert("✅ Conta criada! Verifique seu email para ativar.");
         } catch(erro) {
-            alert("❌ Erro: " + erro.message);
+            alert("❌ " + erro.message);
         }
     }
     
     async function fazerLogout() {
         await auth.signOut();
-        alert("✅ Deslogado!");
+        alert("✅ Até logo!");
     }
     
     // ========== PEDIDOS ==========
@@ -722,11 +901,11 @@
                         <small>📎 ${escapeHtml(p.url)}</small>
                         <div class="link-note" style="margin-top:8px">💬 ${escapeHtml(p.motivo || "Sem justificativa")}</div>
                         <div class="pedido-status status-${p.status}">${p.status === "pendente" ? "⏳ Pendente" : p.status === "aprovado" ? "✅ Aprovado" : "❌ Recusado"}</div>
-                        <small style="color:#6a7c9f">👤 ${escapeHtml(p.email)} | ${new Date(p.data).toLocaleDateString()}</small>
+                        <small style="opacity:0.6">👤 ${escapeHtml(p.email)} | ${new Date(p.data).toLocaleDateString()}</small>
                         ${podeAprovar ? `
-                            <div class="admin-actions">
-                                <button onclick="aprovarPedido('${doc.id}', '${escapeHtml(p.nome)}', '${escapeHtml(p.url)}')" style="background:#10b981">✅ Aprovar</button>
-                                <button onclick="recusarPedido('${doc.id}')" style="background:#ef4444">❌ Recusar</button>
+                            <div style="margin-top: 12px; display: flex; gap: 8px;">
+                                <button onclick="aprovarPedido('${doc.id}', '${escapeHtml(p.nome)}', '${escapeHtml(p.url)}')" style="background:#10b981; padding:6px 16px;">✅ Aprovar</button>
+                                <button onclick="recusarPedido('${doc.id}')" style="background:#ef4444; padding:6px 16px;">❌ Recusar</button>
                             </div>
                         ` : ''}
                     </div>
@@ -738,13 +917,13 @@
         }
     }
     
-    async function abrirPedidoModal() {
+    function abrirPedidoModal() {
         if(!usuarioAtual) {
             alert("⚠️ Você precisa estar logado para fazer um pedido!");
             abrirLogin();
             return;
         }
-        document.getElementById("pedidoModal").style.display = "block";
+        document.getElementById("pedidoModal").style.display = "flex";
     }
     
     async function enviarPedido() {
@@ -766,7 +945,7 @@
             data: new Date().toISOString()
         });
         
-        alert("✅ Pedido enviado! Aguarde aprovação do admin.");
+        alert("✅ Pedido enviado! Aguarde aprovação.");
         fecharModal("pedidoModal");
         document.getElementById("pedidoNome").value = "";
         document.getElementById("pedidoUrl").value = "";
@@ -775,20 +954,16 @@
     }
     
     async function aprovarPedido(id, nome, url) {
-        // Adicionar aos links
         await db.collection("links").add({
             nome: nome,
             url: url,
             imagem: "https://via.placeholder.com/200x150?text=Link",
             cliques: 0,
-            nota: "Aprovado por pedido da comunidade",
+            nota: "Aprovado pela comunidade",
             dataCriacao: new Date().toISOString()
         });
-        
-        // Atualizar status do pedido
         await db.collection("pedidos").doc(id).update({ status: "aprovado" });
-        
-        alert("✅ Pedido aprovado e adicionado aos links!");
+        alert("✅ Pedido aprovado!");
         await carregarLinks();
         await carregarPedidos();
     }
@@ -799,7 +974,7 @@
         await carregarPedidos();
     }
     
-    // ========== LINKS COM NOTAS ==========
+    // ========== LINKS ==========
     async function carregarLinks() {
         try {
             const snapshot = await db.collection("links").orderBy("nome").get();
@@ -907,7 +1082,6 @@
             `;
         }
         container.innerHTML = html;
-        atualizarDataRodape();
     }
     
     function compartilharLink(url, nome) {
@@ -924,9 +1098,9 @@
         const container = document.getElementById("adminPanel");
         if(!adminLogado) {
             container.innerHTML = `
-                <div style="text-align:center;padding:20px">
+                <div style="text-align:center;padding:40px">
                     <h3>🔐 Acesso Admin</h3>
-                    <input type="password" id="adminSenha" placeholder="Senha master" style="padding:10px;margin:10px">
+                    <input type="password" id="adminSenha" placeholder="Senha master" style="padding:12px;margin:16px;border-radius:40px;border:1px solid #3b82f6">
                     <button onclick="validarAdmin()">Entrar</button>
                 </div>
             `;
@@ -935,18 +1109,18 @@
         
         container.innerHTML = `
             <div class="form-group">
-                <h3>➕ Adicionar link (com nota)</h3>
-                <label>Nome:</label>
+                <h3>➕ Adicionar link</h3>
+                <label>Nome</label>
                 <input type="text" id="novoNome">
-                <label>URL:</label>
+                <label>URL</label>
                 <input type="text" id="novaUrl">
-                <label>Imagem URL:</label>
+                <label>Imagem URL</label>
                 <input type="text" id="novaImagem">
-                <label>Nota/Descrição:</label>
-                <textarea id="novaNota" rows="2" placeholder="Uma breve descrição..."></textarea>
+                <label>Nota/Descrição</label>
+                <textarea id="novaNota" rows="2"></textarea>
                 <button onclick="adicionarLinkAdmin()">➕ Adicionar</button>
             </div>
-            <hr>
+            <hr style="margin:24px 0; opacity:0.2">
             <h3>📋 Links (${todosLinks.length})</h3>
             <div id="listaLinksAdmin" class="link-list"></div>
         `;
@@ -977,8 +1151,8 @@
                         <small>${link.cliques || 0} cliques | ${link.nota ? link.nota.substring(0,40) : "sem nota"}</small>
                     </div>
                     <div>
-                        <button onclick="editarLinkAdmin('${link.id}')">✏️ Editar</button>
-                        <button onclick="confirmarExclusao('${link.id}')" style="background:#dc2626">🗑️</button>
+                        <button onclick="editarLinkAdmin('${link.id}')" style="padding:6px 14px;">✏️</button>
+                        <button onclick="confirmarExclusao('${link.id}')" style="background:#dc2626; padding:6px 14px;">🗑️</button>
                     </div>
                 </div>
             `;
@@ -1020,7 +1194,7 @@
         if(!novoNome) return;
         const novaUrl = prompt("Nova URL:", link.url);
         if(!novaUrl) return;
-        const novaNota = prompt("Nova nota/descrição:", link.nota || "");
+        const novaNota = prompt("Nova nota:", link.nota || "");
         
         await db.collection("links").doc(id).update({
             nome: novoNome,
@@ -1035,7 +1209,7 @@
     
     async function confirmarExclusao(id) {
         pendingAction = id;
-        document.getElementById("confirmModal").style.display = "block";
+        document.getElementById("confirmModal").style.display = "flex";
     }
     
     document.getElementById("confirmYes").onclick = async function() {
@@ -1054,10 +1228,6 @@
     };
     
     // ========== UTILITÁRIOS ==========
-    function atualizarDataRodape() {
-        document.getElementById("ultimaAtualizacao").innerHTML = new Date().toLocaleString('pt-BR');
-    }
-    
     function escapeHtml(str) {
         if(!str) return "";
         return str.replace(/[&<>]/g, function(m) {
@@ -1115,8 +1285,6 @@
     
     const temaSalvo = localStorage.getItem('tema');
     if(temaSalvo === 'light') document.body.classList.add('light');
-    
-    atualizarDataRodape();
 </script>
 </body>
 </html>
