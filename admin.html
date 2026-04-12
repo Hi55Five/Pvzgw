@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinKey - Admin</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dark">
+<div class="container">
+    <div class="header">
+        <div class="logo">LinKey</div>
+        <div class="sub">painel admin</div>
+    </div>
+
+    <div class="user-info" id="userInfo">
+        <span class="user-email" id="userEmail">carregando...</span>
+        <div>
+            <button id="loginBtn" class="login-btn" onclick="abrirLogin()">entrar</button>
+            <button id="logoutBtn" class="logout-btn" style="display:none" onclick="fazerLogout()">sair</button>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn" onclick="window.location.href='index.html'">links</button>
+        <button class="tab-btn" onclick="window.location.href='pedidos.html'">pedidos</button>
+        <button class="tab-btn active" id="adminTabBtn">admin</button>
+    </div>
+
+    <div id="adminPanel"></div>
+
+    <!-- Modal Confirmar Exclusão -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content" style="max-width: 350px; text-align: center;">
+            <h3 style="margin-bottom: 20px;">tem certeza?</h3>
+            <button id="confirmYes" style="background:#a43a3a;">excluir</button>
+            <button id="confirmNo" style="background:#2a2f3a; margin-left:8px;">cancelar</button>
+        </div>
+    </div>
+
+    <!-- Modal Login -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>entrar</h2>
+                <span class="close" onclick="fecharModal('loginModal')">&times;</span>
+            </div>
+            <div class="form-group">
+                <label>email</label>
+                <input type="email" id="loginEmail" placeholder="seu@email.com">
+            </div>
+            <div class="form-group">
+                <label>senha</label>
+                <input type="password" id="loginSenha" placeholder="mínimo 6 caracteres">
+            </div>
+            <button onclick="fazerLogin()">entrar</button>
+            <button onclick="criarConta()" style="background:#4c9f4f; margin-left:8px;">criar conta</button>
+        </div>
+    </div>
+
+    <div class="footer">
+        linKey · comunidade de links
+    </div>
+</div>
+
+<button class="theme-btn" onclick="alternarTema()">🌓</button>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="javascript.js"></script>
+<script>
+    // Ao carregar a página, vai direto pro painel admin
+    document.addEventListener("DOMContentLoaded", function () {
+        // Aguarda auth resolver, então exibe admin
+        const unsub = auth.onAuthStateChanged(function () {
+            unsub();
+            mostrarAdminPanel();
+        });
+    });
+</script>
+</body>
+</html>
