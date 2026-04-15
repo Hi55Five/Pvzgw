@@ -3,108 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LinKey - Galeria de Links</title>
+    <title>LinKey — Galeria de Links</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
 <body class="dark">
-<div class="container">
-    <div class="header">
-        <div class="logo">LinKey</div>
-        <div class="sub">sua galeria de links</div>
-    </div>
 
-    <div class="user-info" id="userInfo">
-        <span class="user-email" id="userEmail">carregando...</span>
-        <div>
-            <button id="loginBtn" class="login-btn" onclick="abrirLogin()">entrar</button>
-            <button id="logoutBtn" class="logout-btn" style="display:none" onclick="fazerLogout()">sair</button>
-        </div>
-    </div>
-
-    <div class="tabs">
-        <button class="tab-btn active" onclick="mudarAba('links')">links</button>
-        <button class="tab-btn" onclick="mudarAba('pedidos')">feed</button>
-        <button class="tab-btn admin-only" id="adminTabBtn" style="display:none" onclick="mudarAba('admin')">admin</button>
-    </div>
-
-    <!-- Aba Links -->
-    <div id="tabLinks" class="tab-content">
-        <div class="toolbar">
-            <select id="sortSelect" class="sort-select" onchange="aplicarOrdenacao()">
-                <option value="nome">ordenar por nome</option>
-                <option value="cliques">mais acessados</option>
-                <option value="data">mais recentes</option>
-            </select>
-        </div>
-        <div class="search-section">
-            <div class="search-box">
-                <span class="search-icon">&#128269;</span>
-                <input type="text" id="searchInput" placeholder="buscar link...">
-                <button class="clear-search" id="clearSearchBtn">&#10006;</button>
+    <div class="app-container">
+        <header class="main-header">
+            <div class="brand">
+                <h1 class="logo">LinKey</h1>
+                <p class="tagline">sua galeria de links</p>
             </div>
-            <div class="result-stats" id="resultStats"></div>
-        </div>
-        <div id="galleryContainer" class="gallery">
-            <div class="no-results">carregando links...</div>
-        </div>
+            
+            <nav class="user-controls" id="userInfo">
+                <span class="user-email" id="userEmail">carregando...</span>
+                <div class="auth-buttons">
+                    <button id="loginBtn" class="btn-primary" onclick="abrirLogin()">entrar</button>
+                    <button id="logoutBtn" class="btn-outline hidden" onclick="fazerLogout()">sair</button>
+                </div>
+            </nav>
+        </header>
+
+        <nav class="tabs-nav">
+            <button class="tab-btn active" onclick="mudarAba('links')">links</button>
+            <button class="tab-btn" onclick="mudarAba('pedidos')">feed</button>
+            <button class="tab-btn admin-only hidden" id="adminTabBtn" onclick="mudarAba('admin')">admin</button>
+        </nav>
+
+        <main class="content">
+            
+            <section id="tabLinks" class="tab-content">
+                <div class="filter-bar">
+                    <div class="search-wrapper">
+                        <span class="icon-search">🔍</span>
+                        <input type="text" id="searchInput" placeholder="Buscar na sua galeria...">
+                        <button class="btn-clear" id="clearSearchBtn" title="Limpar busca">&times;</button>
+                    </div>
+                    
+                    <select id="sortSelect" class="custom-select" onchange="aplicarOrdenacao()">
+                        <option value="nome">Nome (A-Z)</option>
+                        <option value="cliques">Mais acessados</option>
+                        <option value="data">Mais recentes</option>
+                    </select>
+                </div>
+
+                <div id="resultStats" class="stats-text"></div>
+
+                <div id="galleryContainer" class="gallery-grid">
+                    <div class="loader">Buscando seus links...</div>
+                </div>
+            </section>
+
+            <section id="tabPedidos" class="tab-content hidden">
+                <div class="post-card composer">
+                    <textarea id="novoPostTexto" placeholder="O que você quer compartilhar agora?" rows="3"></textarea>
+                    <div class="composer-actions">
+                        <input type="text" id="novoPostUrl" placeholder="Link (opcional)">
+                        <button class="btn-send" onclick="publicarPost()">Publicar</button>
+                    </div>
+                </div>
+                
+                <div class="feed-timeline" id="feedContainer">
+                    <div class="loader">Atualizando feed...</div>
+                </div>
+            </section>
+
+            <section id="tabAdmin" class="tab-content hidden">
+                <div id="adminPanel" class="admin-card">
+                    </div>
+            </section>
+        </main>
+
+        <footer class="main-footer">
+            <p>LinKey &copy; 2024 · Comunidade de Links</p>
+        </footer>
     </div>
 
-    <!-- Aba Feed -->
-    <div id="tabPedidos" class="tab-content" style="display:none">
-        <div class="feed-composer">
-            <textarea id="novoPostTexto" rows="3" placeholder="o que voce quer compartilhar?"></textarea>
-            <input type="text" id="novoPostUrl" placeholder="link (opcional)">
-            <div class="composer-footer">
-                <button class="publicar-btn" onclick="publicarPost()">publicar</button>
+    <button class="theme-toggle" onclick="alternarTema()" aria-label="Mudar tema">
+        <span class="theme-icon">🌙</span>
+    </button>
+
+    <div id="loginModal" class="modal-overlay">
+        <div class="modal-card">
+            <header class="modal-header">
+                <h2>Bem-vindo de volta</h2>
+                <button class="btn-close" onclick="fecharModal('loginModal')">&times;</button>
+            </header>
+            <div class="modal-body">
+                <div class="input-group">
+                    <label for="loginEmail">E-mail</label>
+                    <input type="email" id="loginEmail" placeholder="exemplo@email.com">
+                </div>
+                <div class="input-group">
+                    <label for="loginSenha">Senha</label>
+                    <input type="password" id="loginSenha" placeholder="No mínimo 6 caracteres">
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-confirm" onclick="fazerLogin()">Entrar</button>
+                    <button class="btn-secondary" onclick="criarConta()">Criar nova conta</button>
+                </div>
             </div>
         </div>
-        <div class="feed-lista" id="feedContainer">
-            <div class="no-results">carregando feed...</div>
+    </div>
+
+    <div id="confirmModal" class="modal-overlay">
+        <div class="modal-card small-modal">
+            <h3>Confirmar exclusão?</h3>
+            <p>Essa ação não pode ser desfeita.</p>
+            <div class="modal-actions">
+                <button id="confirmYes" class="btn-danger">Excluir</button>
+                <button id="confirmNo" class="btn-cancel" onclick="fecharModal('confirmModal')">Cancelar</button>
+            </div>
         </div>
     </div>
 
-    <!-- Aba Admin -->
-    <div id="tabAdmin" class="tab-content" style="display:none">
-        <div id="adminPanel"></div>
-    </div>
-
-    <div class="footer">linKey · comunidade de links</div>
-</div>
-
-<button class="theme-btn" onclick="alternarTema()">&#127763;</button>
-
-<!-- Modal Login -->
-<div id="loginModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2>entrar</h2>
-            <span class="close" onclick="fecharModal('loginModal')">&times;</span>
-        </div>
-        <div class="form-group">
-            <label>email</label>
-            <input type="email" id="loginEmail" placeholder="seu@email.com">
-        </div>
-        <div class="form-group">
-            <label>senha</label>
-            <input type="password" id="loginSenha" placeholder="minimo 6 caracteres">
-        </div>
-        <button onclick="fazerLogin()">entrar</button>
-        <button onclick="criarConta()" style="background:#4c9f4f; margin-left:8px;">criar conta</button>
-    </div>
-</div>
-
-<!-- Modal Confirmar Exclusao -->
-<div id="confirmModal" class="modal">
-    <div class="modal-content" style="max-width: 350px; text-align: center;">
-        <h3 style="margin-bottom: 20px;">tem certeza?</h3>
-        <button id="confirmYes" style="background:#a43a3a;">excluir</button>
-        <button id="confirmNo" style="background:#2a2f3a; margin-left:8px;">cancelar</button>
-    </div>
-</div>
-
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-<script src="javascript.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="javascript.js"></script>
 </body>
 </html>
