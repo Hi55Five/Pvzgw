@@ -206,10 +206,7 @@ async function carregarAvaliacoes(linkId) {
             const n = doc.data();
             const ehDono = usuarioAtual && usuarioAtual.uid === n.uid;
             html += `<div class="nota-item">
-                <span class="nota-autor">${escapeHtml(n.email.split('@')[0])}</span>
-                <span class="estrelas-display">${renderEstrelasSomente(n.estrelas)}</span>
-                <span class="nota-data">${new Date(n.data).toLocaleDateString('pt-br')}</span>
-                ${ehDono ? `<button class="nota-delete-btn" onclick="deletarAvaliacao('${linkId}','${doc.id}')">apagar</button>` : ''}
+                ${ehDono ? `<button class="nota-delete-btn" onclick="deletarAvaliacao('${linkId}','${doc.id}')">apagar avaliação</button>` : ''}
             </div>`;
         });
         lista.innerHTML = html;
