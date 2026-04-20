@@ -30,14 +30,16 @@ auth.onAuthStateChanged(async (user) => {
         document.getElementById("loginBtn").style.display = "none";
         document.getElementById("logoutBtn").style.display = "inline-block";
         if (!user.emailVerified) {
-            alert("verifique seu email! enviamos um link.");
             await user.sendEmailVerification();
         }
         const isAdmin = user.email === "admin@linkey.com" || localStorage.getItem("adminTemp") === "true";
         if (isAdmin) {
             adminLogado = true;
-            const btn = document.getElementById("adminTabBtn");
-            if (btn) btn.style.display = "inline-block";
+        }
+        const btn = document.getElementById("adminTabBtn");
+        if (btn) {
+            btn.classList.remove("hidden");
+            btn.style.display = "inline-block";
         }
     } else {
         usuarioAtual = null;
@@ -45,12 +47,9 @@ auth.onAuthStateChanged(async (user) => {
         document.getElementById("userEmail").innerHTML = "desconectado";
         document.getElementById("loginBtn").style.display = "inline-block";
         document.getElementById("logoutBtn").style.display = "none";
-        const btn = document.getElementById("adminTabBtn");
-        if (btn) btn.style.display = "none";
         if (abaAtual === "admin") mudarAba("links");
     }
     await carregarLinks();
-    await carregarFeed();
 });
 
 function abrirLogin() { document.getElementById("loginModal").style.display = "flex"; }
@@ -89,7 +88,7 @@ async function carregarLinks() {
         aplicarOrdenacao();
     } catch (e) {
         const c = document.getElementById("galleryContainer");
-        if (c) c.innerHTML = '<div class="no-results">erro ao carregar links.</div>';
+        if (c) c.innerHTML = '<div class="no-results">erro ao carregar links. <button onclick="carregarLinks()">tentar novamente</button></div>';
     }
 }
 
@@ -108,6 +107,7 @@ function aplicarOrdenacao() {
     if (ordenacaoAtual === "nome") lf.sort((a, b) => a.nome.localeCompare(b.nome));
     else if (ordenacaoAtual === "cliques") lf.sort((a, b) => b.cliques - a.cliques);
     else if (ordenacaoAtual === "data") lf.sort((a, b) => new Date(b.dataCriacao) - new Date(a.dataCriacao));
+    else if (ordenacaoAtual === "estrelas") lf.sort((a, b) => (b.mediaEstrelas || 0) - (a.mediaEstrelas || 0));
     const s = document.getElementById("searchInput");
     renderizarGaleria(lf, s ? s.value : "");
 }
@@ -129,6 +129,7 @@ function renderizarGaleria(links, busca) {
     let html = "";
     for (let link of filtrados) {
         const ehHot = link.cliques === maxCliques && maxCliques > 0;
+        const mediaStr = link.mediaEstrelas ? `<span class="estrelas-media">${renderEstrelasSomente(link.mediaEstrelas)} <small>${link.mediaEstrelas.toFixed(1)} (${link.totalAvaliacoes || 0})</small></span>` : `<span class="estrelas-media sem-avaliacao">sem avaliações</span>`;
         html += `
             <div class="card" style="position:relative">
                 ${ehHot ? '<div class="hot-badge">&#128293;</div>' : ''}
@@ -136,17 +137,23 @@ function renderizarGaleria(links, busca) {
                 <div class="card-content">
                     <div class="link-name">${escapeHtml(link.nome)}</div>
                     ${link.nota ? `<div class="link-note">${escapeHtml(link.nota)}</div>` : ''}
-                    <div class="link-cliques">&#128065; ${link.cliques || 0}</div>
+                    <div class="link-meta">
+                        <span class="link-cliques">&#128065; ${link.cliques || 0}</span>
+                        ${mediaStr}
+                    </div>
                     <div class="card-buttons">
                         <button class="download-btn" onclick="window.open('${link.url}', '_blank'); contarClique('${link.id}')">acessar</button>
                         <button class="share-btn" onclick="compartilharLink('${link.url}', '${link.nome}')">compartilhar</button>
                     </div>
-                    <button class="notes-toggle-btn" onclick="toggleNotas('${link.id}')">&#128172; notas</button>
+                    <button class="notes-toggle-btn" onclick="toggleAvaliacoes('${link.id}')">&#11088; avaliar</button>
                     <div class="notas-section" id="notas-${link.id}" style="display:none">
                         <div class="notas-lista" id="lista-notas-${link.id}">carregando...</div>
                         <div class="nota-form">
-                            <textarea id="input-nota-${link.id}" placeholder="escreva uma nota sobre esse link..." rows="2"></textarea>
-                            <button class="nota-enviar-btn" onclick="enviarNota('${link.id}')">enviar</button>
+                            <div class="star-input" id="star-input-${link.id}">
+                                ${[1,2,3,4,5].map(n => `<span class="star-btn" data-value="${n}" onclick="selecionarEstrela('${link.id}', ${n})">&#9733;</span>`).join('')}
+                            </div>
+                            <input type="hidden" id="star-value-${link.id}" value="0">
+                            <button class="nota-enviar-btn" onclick="enviarAvaliacao('${link.id}')">enviar avaliação</button>
                         </div>
                     </div>
                 </div>
@@ -156,138 +163,113 @@ function renderizarGaleria(links, busca) {
 }
 
 // =====================
-// Notas
+// Estrelas
 // =====================
-async function toggleNotas(linkId) {
+function renderEstrelasSomente(media) {
+    let html = "";
+    for (let i = 1; i <= 5; i++) {
+        if (i <= Math.round(media)) html += `<span class="star filled">&#9733;</span>`;
+        else html += `<span class="star empty">&#9733;</span>`;
+    }
+    return html;
+}
+
+function selecionarEstrela(linkId, valor) {
+    document.getElementById("star-value-" + linkId).value = valor;
+    const stars = document.querySelectorAll(`#star-input-${linkId} .star-btn`);
+    stars.forEach(s => {
+        s.classList.toggle("selecionada", parseInt(s.dataset.value) <= valor);
+    });
+}
+
+async function toggleAvaliacoes(linkId) {
     const section = document.getElementById("notas-" + linkId);
     const btn = section.previousElementSibling;
     if (section.style.display === "none") {
         section.style.display = "block";
-        btn.textContent = "fechar notas";
-        await carregarNotas(linkId);
+        btn.textContent = "fechar";
+        await carregarAvaliacoes(linkId);
     } else {
         section.style.display = "none";
-        btn.textContent = "&#128172; notas";
+        btn.innerHTML = "&#11088; avaliar";
     }
 }
 
-async function carregarNotas(linkId) {
+async function carregarAvaliacoes(linkId) {
     const lista = document.getElementById("lista-notas-" + linkId);
     if (!lista) return;
     try {
-        const snapshot = await db.collection("links").doc(linkId).collection("notas").orderBy("data", "desc").get();
-        if (snapshot.empty) { lista.innerHTML = '<div class="nota-vazia">nenhuma nota ainda.</div>'; return; }
+        const snapshot = await db.collection("links").doc(linkId).collection("avaliacoes").orderBy("data", "desc").get();
+        if (snapshot.empty) { lista.innerHTML = '<div class="nota-vazia">nenhuma avaliação ainda.</div>'; return; }
         let html = "";
         snapshot.forEach(doc => {
             const n = doc.data();
-            const ehDono = usuarioAtual && usuarioAtual.email === n.email;
+            const ehDono = usuarioAtual && usuarioAtual.uid === n.uid;
             html += `<div class="nota-item">
                 <span class="nota-autor">${escapeHtml(n.email.split('@')[0])}</span>
+                <span class="estrelas-display">${renderEstrelasSomente(n.estrelas)}</span>
                 <span class="nota-data">${new Date(n.data).toLocaleDateString('pt-br')}</span>
-                ${ehDono ? `<button class="nota-delete-btn" onclick="deletarNota('${linkId}','${doc.id}')">apagar</button>` : ''}
-                <div class="nota-texto">${escapeHtml(n.texto)}</div>
+                ${ehDono ? `<button class="nota-delete-btn" onclick="deletarAvaliacao('${linkId}','${doc.id}')">apagar</button>` : ''}
             </div>`;
         });
         lista.innerHTML = html;
     } catch (e) { lista.innerHTML = '<div class="nota-vazia">erro ao carregar.</div>'; }
 }
 
-async function enviarNota(linkId) {
-    if (!usuarioAtual) { alert("faca login para comentar!"); abrirLogin(); return; }
-    const input = document.getElementById("input-nota-" + linkId);
-    const texto = input.value.trim();
-    if (!texto) return;
-    await db.collection("links").doc(linkId).collection("notas").add({ texto, email: usuarioAtual.email, data: new Date().toISOString() });
-    input.value = "";
-    await carregarNotas(linkId);
+async function enviarAvaliacao(linkId) {
+    if (!usuarioAtual) { alert("faca login para avaliar!"); abrirLogin(); return; }
+    const valor = parseInt(document.getElementById("star-value-" + linkId).value);
+    if (!valor || valor < 1) { alert("selecione uma nota de 1 a 5 estrelas!"); return; }
+
+    // Verifica se já avaliou
+    const existing = await db.collection("links").doc(linkId).collection("avaliacoes")
+        .where("uid", "==", usuarioAtual.uid).get();
+    if (!existing.empty) {
+        if (!confirm("você já avaliou esse link. deseja substituir sua avaliação?")) return;
+        await existing.docs[0].ref.delete();
+    }
+
+    await db.collection("links").doc(linkId).collection("avaliacoes").add({
+        estrelas: valor,
+        email: usuarioAtual.email,
+        uid: usuarioAtual.uid,
+        data: new Date().toISOString()
+    });
+
+    // Recalcula média e salva no link
+    const todasAvaliacoes = await db.collection("links").doc(linkId).collection("avaliacoes").get();
+    let total = 0;
+    todasAvaliacoes.forEach(d => { total += d.data().estrelas; });
+    const media = total / todasAvaliacoes.size;
+    await db.collection("links").doc(linkId).update({ mediaEstrelas: media, totalAvaliacoes: todasAvaliacoes.size });
+
+    // Atualiza local
+    const linkLocal = todosLinks.find(l => l.id === linkId);
+    if (linkLocal) { linkLocal.mediaEstrelas = media; linkLocal.totalAvaliacoes = todasAvaliacoes.size; }
+
+    await carregarAvaliacoes(linkId);
+    aplicarOrdenacao();
 }
 
-async function deletarNota(linkId, notaId) {
-    await db.collection("links").doc(linkId).collection("notas").doc(notaId).delete();
-    await carregarNotas(linkId);
+async function deletarAvaliacao(linkId, avalId) {
+    await db.collection("links").doc(linkId).collection("avaliacoes").doc(avalId).delete();
+
+    const todasAvaliacoes = await db.collection("links").doc(linkId).collection("avaliacoes").get();
+    let media = 0, count = todasAvaliacoes.size;
+    todasAvaliacoes.forEach(d => { media += d.data().estrelas; });
+    media = count > 0 ? media / count : 0;
+    await db.collection("links").doc(linkId).update({ mediaEstrelas: count > 0 ? media : firebase.firestore.FieldValue.delete(), totalAvaliacoes: count });
+
+    const linkLocal = todosLinks.find(l => l.id === linkId);
+    if (linkLocal) { linkLocal.mediaEstrelas = media; linkLocal.totalAvaliacoes = count; }
+
+    await carregarAvaliacoes(linkId);
+    aplicarOrdenacao();
 }
 
 function compartilharLink(url, nome) {
     if (navigator.share) navigator.share({ title: nome, url });
     else { navigator.clipboard.writeText(url); alert('link copiado!'); }
-}
-
-// =====================
-// Feed
-// =====================
-async function carregarFeed() {
-    const container = document.getElementById("feedContainer");
-    if (!container) return;
-    try {
-        const snapshot = await db.collection("posts").orderBy("data", "desc").get();
-        if (snapshot.empty) { container.innerHTML = '<div class="no-results">nenhum post ainda. seja o primeiro!</div>'; return; }
-        let html = "";
-        snapshot.forEach(doc => { html += renderizarPost(doc.id, doc.data()); });
-        container.innerHTML = html;
-    } catch (e) { container.innerHTML = '<div class="no-results">erro ao carregar feed.</div>'; }
-}
-
-function renderizarPost(id, p) {
-    const jaCurtiu = usuarioAtual && (p.curtidas_uids || []).includes(usuarioAtual.uid);
-    const ehDono = usuarioAtual && usuarioAtual.email === p.email;
-    const data = new Date(p.data);
-    const dataStr = data.toLocaleDateString('pt-br') + ' · ' + data.toLocaleTimeString('pt-br', { hour: '2-digit', minute: '2-digit' });
-    return `<div class="post-card" id="post-${id}">
-        <div class="post-avatar">${escapeHtml(p.email[0].toUpperCase())}</div>
-        <div class="post-body">
-            <div class="post-header">
-                <span class="post-autor">${escapeHtml(p.email.split('@')[0])}</span>
-                <span class="post-data">${dataStr}</span>
-                ${ehDono ? `<button class="post-delete-btn" onclick="deletarPost('${id}')">&#128465;</button>` : ''}
-            </div>
-            <div class="post-texto">${escapeHtml(p.texto)}</div>
-            ${p.url ? `<a class="post-link" href="${escapeHtml(p.url)}" target="_blank">${escapeHtml(p.url)}</a>` : ''}
-            <div class="post-actions">
-                <button class="curtir-btn ${jaCurtiu ? 'curtido' : ''}" onclick="curtirPost('${id}')">
-                    ${jaCurtiu ? '&#10084;&#65039;' : '&#129293;'} <span>${p.curtidas || 0}</span>
-                </button>
-            </div>
-        </div>
-    </div>`;
-}
-
-async function publicarPost() {
-    if (!usuarioAtual) { alert("faca login para postar!"); abrirLogin(); return; }
-    const textoEl = document.getElementById("novoPostTexto");
-    const urlEl = document.getElementById("novoPostUrl");
-    const texto = textoEl ? textoEl.value.trim() : "";
-    const url = urlEl ? urlEl.value.trim() : "";
-    if (!texto) { alert("escreva algo antes de publicar!"); return; }
-    const btn = document.querySelector(".publicar-btn");
-    if (btn) { btn.disabled = true; btn.textContent = "publicando..."; }
-    try {
-        await db.collection("posts").add({ texto, url: url || "", email: usuarioAtual.email, uid: usuarioAtual.uid, curtidas: 0, curtidas_uids: [], data: new Date().toISOString() });
-        if (textoEl) textoEl.value = "";
-        if (urlEl) urlEl.value = "";
-        await carregarFeed();
-    } catch(e) { alert("erro ao publicar."); }
-    if (btn) { btn.disabled = false; btn.textContent = "publicar"; }
-}
-
-async function curtirPost(id) {
-    if (!usuarioAtual) { alert("faca login para curtir!"); abrirLogin(); return; }
-    const ref = db.collection("posts").doc(id);
-    const snap = await ref.get();
-    const data = snap.data();
-    const uids = data.curtidas_uids || [];
-    const jaCurtiu = uids.includes(usuarioAtual.uid);
-    if (jaCurtiu) {
-        await ref.update({ curtidas: Math.max(0, (data.curtidas || 0) - 1), curtidas_uids: uids.filter(u => u !== usuarioAtual.uid) });
-    } else {
-        await ref.update({ curtidas: (data.curtidas || 0) + 1, curtidas_uids: [...uids, usuarioAtual.uid] });
-    }
-    await carregarFeed();
-}
-
-async function deletarPost(id) {
-    if (!confirm("apagar este post?")) return;
-    await db.collection("posts").doc(id).delete();
-    await carregarFeed();
 }
 
 // =====================
@@ -305,7 +287,7 @@ async function mostrarAdminPanel() {
         <label>nome</label><input type="text" id="novoNome">
         <label>url</label><input type="text" id="novaUrl">
         <label>imagem url</label><input type="text" id="novaImagem">
-        <label>nota</label><textarea id="novaNota" rows="2"></textarea>
+        <label>descrição</label><textarea id="novaNota" rows="2"></textarea>
         <button onclick="adicionarLinkAdmin()">adicionar</button></div>
         <hr><h3>links (${todosLinks.length})</h3><div id="listaLinksAdmin" class="link-list"></div>`;
     await listarLinksAdmin();
@@ -315,7 +297,10 @@ function validarAdmin() {
     if (document.getElementById("adminSenha").value === SENHA_ADMIN) {
         adminLogado = true; localStorage.setItem("adminTemp", "true");
         const btn = document.getElementById("adminTabBtn");
-        if (btn) btn.style.display = "inline-block";
+        if (btn) {
+            btn.classList.remove("hidden");
+            btn.style.display = "inline-block";
+        }
         mostrarAdminPanel();
     } else { alert("senha incorreta!"); }
 }
@@ -325,7 +310,8 @@ async function listarLinksAdmin() {
     if (!div) return;
     let html = "";
     for (let link of todosLinks) {
-        html += `<div class="link-item"><div><strong>${escapeHtml(link.nome)}</strong><br><small>${link.cliques} cliques</small></div><div><button onclick="editarLinkAdmin('${link.id}')">editar</button><button onclick="confirmarExclusao('${link.id}')" style="background:#a43a3a">excluir</button></div></div>`;
+        const mediaStr = link.mediaEstrelas ? `${link.mediaEstrelas.toFixed(1)}★ (${link.totalAvaliacoes || 0})` : "sem avaliações";
+        html += `<div class="link-item"><div><strong>${escapeHtml(link.nome)}</strong><br><small>${link.cliques} cliques · ${mediaStr}</small></div><div><button onclick="editarLinkAdmin('${link.id}')">editar</button><button onclick="confirmarExclusao('${link.id}')" style="background:#a43a3a">excluir</button></div></div>`;
     }
     div.innerHTML = html;
 }
@@ -344,7 +330,7 @@ async function editarLinkAdmin(id) {
     const link = todosLinks.find(l => l.id === id);
     const novoNome = prompt("novo nome:", link.nome); if (!novoNome) return;
     const novaUrl = prompt("nova url:", link.url); if (!novaUrl) return;
-    const novaNota = prompt("nova nota:", link.nota || "");
+    const novaNota = prompt("nova descrição:", link.nota || "");
     await db.collection("links").doc(id).update({ nome: novoNome, url: novaUrl, nota: novaNota || "" });
     alert("link atualizado!"); await carregarLinks(); await listarLinksAdmin();
 }
@@ -361,9 +347,8 @@ function mudarAba(aba) {
     abaAtual = aba;
     document.querySelectorAll(".tab-content").forEach(t => t.style.display = "none");
     document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-    if (aba === "links") { document.getElementById("tabLinks").style.display = "block"; document.querySelector(".tabs button:first-child").classList.add("active"); aplicarOrdenacao(); }
-    else if (aba === "pedidos") { document.getElementById("tabPedidos").style.display = "block"; document.querySelectorAll(".tabs button")[1].classList.add("active"); carregarFeed(); }
-    else if (aba === "admin") { document.getElementById("tabAdmin").style.display = "block"; document.querySelectorAll(".tabs button")[2].classList.add("active"); mostrarAdminPanel(); }
+    if (aba === "links") { document.getElementById("tabLinks").style.display = "block"; document.querySelector(".tabs-nav button:first-child, .tabs button:first-child").classList.add("active"); aplicarOrdenacao(); }
+    else if (aba === "admin") { document.getElementById("tabAdmin").style.display = "block"; document.querySelectorAll(".tabs-nav button, .tabs button")[1].classList.add("active"); mostrarAdminPanel(); }
 }
 
 function alternarTema() {

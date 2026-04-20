@@ -23,7 +23,6 @@
 
     <div class="tabs">
         <button class="tab-btn" onclick="window.location.href='index.html'">links</button>
-        <button class="tab-btn" onclick="window.location.href='pedidos.html'">pedidos</button>
         <button class="tab-btn active" id="adminTabBtn">admin</button>
     </div>
 
@@ -63,17 +62,13 @@
     </div>
 </div>
 
-<button class="theme-btn" onclick="alternarTema()">🌓</button>
-
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="javascript.js"></script>
 <script>
-    // Ao carregar a página, vai direto pro painel admin
     document.addEventListener("DOMContentLoaded", function () {
-        // Aguarda auth resolver, então exibe admin
         const unsub = auth.onAuthStateChanged(function () {
             unsub();
             mostrarAdminPanel();
